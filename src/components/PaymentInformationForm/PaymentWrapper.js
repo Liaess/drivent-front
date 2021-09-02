@@ -31,7 +31,7 @@ export const Option = styled.div`
   cursor: pointer;
   margin-bottom: 40px;
   background-color: ${(props) =>
-    props.isOnline
+    props.isOnlineOption
       ? "#FFEED2"
       : props.isPresential
         ? "#FFEED2"

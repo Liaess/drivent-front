@@ -8,7 +8,7 @@ export default function AccomodationFinishMessage({ isSelected }) {
     <Accommodation>
       <h2>
         Fechado! O total ficou em
-        <span>R$ {isSelected.price + isSelected.hotelPrice}</span>. Agora é só
+        <span> R$ {isSelected.price + isSelected.hotelPrice}</span>. Agora é só
         confirmar:
       </h2>
       <Finish>RESERVAR INGRESSO</Finish>

@@ -9,38 +9,49 @@ import AccomodationFinishMessage from "./AccomodationFinishMessage";
 
 export default function PaymentInformationForm() {
   const [isSelected, setIsSelected] = useState({
-    option: null,
+    isOnline: null,
     price: null,
-    hotel: null,
+    hashotelReservation: null,
     hotelPrice: null,
+    isPaid: null,
   });
   const [isPresential, setIsPresential] = useState(false);
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnlineOption, setIsOnlineOption] = useState(false);
   const [hasHotel, setHasHotel] = useState(false);
   const [hasntHotel, setHasntHotel] = useState(false);
 
-  function handleModalityChoice(option, price) {
-    setIsSelected({ option, price, hotel: null, hotelPrice: null });
-    if (option === "Presencial") {
+  function handleModalityChoice(isOnline, price) {
+    setIsSelected({
+      isOnline,
+      price,
+      hashotelReservation: null,
+      hotelPrice: null,
+      isPaid: null,
+    });
+    if (isOnline === false) {
       setIsPresential(true);
-      setIsOnline(false);
+      setIsOnlineOption(false);
       setHasntHotel(false);
       setHasHotel(false);
     } else {
       setIsPresential(false);
       setHasntHotel(false);
       setHasHotel(false);
-      setIsOnline(true);
+      setIsOnlineOption(true);
     }
   }
 
   function handleHospitalityChoice(choice, hotelPrice) {
-    if (choice === "hasHotel") {
-      setIsSelected({ ...isSelected, hotel: true, hotelPrice });
+    if (choice === true) {
+      setIsSelected({ ...isSelected, hashotelReservation: true, hotelPrice });
       setHasHotel(true);
       setHasntHotel(false);
     } else {
-      setIsSelected({ ...isSelected, hotel: false, hotelPrice: null });
+      setIsSelected({
+        ...isSelected,
+        hashotelReservation: false,
+        hotelPrice: null,
+      });
       setHasntHotel(true);
       setHasHotel(false);
     }
@@ -54,14 +65,14 @@ export default function PaymentInformationForm() {
         <Choices>
           <Option
             isPresential={isPresential}
-            onClick={() => handleModalityChoice("Presencial", 250)}
+            onClick={() => handleModalityChoice(false, 250)}
           >
             <p>Presencial</p>
             <span>R$ 250</span>
           </Option>
           <Option
-            isOnline={isOnline}
-            onClick={() => handleModalityChoice("Online", 100)}
+            isOnlineOption={isOnlineOption}
+            onClick={() => handleModalityChoice(true, 100)}
           >
             <p>Online</p>
             <span>R$ 100</span>
@@ -75,28 +86,28 @@ export default function PaymentInformationForm() {
             <Choices>
               <Option
                 hasntHotel={hasntHotel}
-                onClick={() => handleHospitalityChoice("hasntHotel", 0)}
+                onClick={() => handleHospitalityChoice(false, 0)}
               >
                 <p>Sem Hotel</p>
                 <span>+ R$ 0</span>
               </Option>
               <Option
                 hasHotel={hasHotel}
-                onClick={() => handleHospitalityChoice("hasHotel", 350)}
+                onClick={() => handleHospitalityChoice(true, 350)}
               >
                 <p>Com Hotel</p>
                 <span>+ R$ 350</span>
               </Option>
             </Choices>
           </Accommodation>
-        ) : isOnline ? (
-          <AccomodationFinishMessage isSelected={isSelected}/>
+        ) : isOnlineOption ? (
+          <AccomodationFinishMessage isSelected={isSelected} />
         ) : (
           <></>
         )}
       </div>
       {hasHotel || hasntHotel ? (
-        <AccomodationFinishMessage isSelected={isSelected}/>
+        <AccomodationFinishMessage isSelected={isSelected} />
       ) : (
         <div></div>
       )}
