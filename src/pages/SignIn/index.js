@@ -22,28 +22,30 @@ export default function SignIn() {
 
   const { eventInfo } = useContext(EventInfoContext);
   const { setUserData } = useContext(UserContext);
-  
+
   function submit(event) {
     event.preventDefault();
     setLoadingSignIn(true);
 
-    api.auth.signIn(email, password).then(response => {
-      setUserData(response.data);
-    }).catch(error => {
-      /* eslint-disable-next-line no-console */
-      console.error(error);
-      
-      if (error.response) {
-        for (const detail of error.response.data.details) {
-          toast(detail);
+    api.auth
+      .signIn(email, password)
+      .then((response) => {
+        setUserData(response.data);
+      })
+      .catch((error) => {
+        /* eslint-disable-next-line no-console */
+        console.error(error.response);
+
+        if (error.response) {
+          toast(error.response.data.message);
+        } else {
+          toast("Não foi possível conectar ao servidor!");
         }
-      } else {
-        toast("Não foi possível conectar ao servidor!");
-      }
-    }).then(() => {
-      setLoadingSignIn(false);
-    });
-  } 
+      })
+      .then(() => {
+        setLoadingSignIn(false);
+      });
+  }
 
   return (
     <AuthLayout background={eventInfo.backgroundImage}>
@@ -54,9 +56,28 @@ export default function SignIn() {
       <Row>
         <Label>Entrar</Label>
         <form onSubmit={submit}>
-          <Input label="E-mail" type="text" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
-          <Input label="Senha" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
-          <Button type="submit" color="primary" fullWidth disabled={loadingSignIn}>Entrar</Button>
+          <Input
+            label="E-mail"
+            type="text"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            label="Senha"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            color="primary"
+            fullWidth
+            disabled={loadingSignIn}
+          >
+            Entrar
+          </Button>
         </form>
       </Row>
       <Row>
