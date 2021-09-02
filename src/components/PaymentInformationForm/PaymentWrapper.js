@@ -35,9 +35,9 @@ export const Option = styled.div`
       ? "#FFEED2"
       : props.isPresential
         ? "#FFEED2"
-        : props.hasHotel
+        : props.choseToHaveHotel
           ? "#FFEED2"
-          : props.hasntHotel
+          : props.choseNotToHaveHotel
             ? "#FFEED2"
             : "#fff"};
   :nth-child(2) {

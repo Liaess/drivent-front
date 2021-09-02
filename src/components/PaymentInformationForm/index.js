@@ -11,47 +11,47 @@ export default function PaymentInformationForm() {
   const [isSelected, setIsSelected] = useState({
     isOnline: null,
     price: null,
-    hashotelReservation: null,
+    hasHotelReservation: null,
     hotelPrice: null,
   });
   const [isPresential, setIsPresential] = useState(false);
   const [isOnlineOption, setIsOnlineOption] = useState(false);
-  const [hasHotel, setHasHotel] = useState(false);
-  const [hasntHotel, setHasntHotel] = useState(false);
+  const [choseToHaveHotel, setChoseToHaveHotel] = useState(false);
+  const [choseNotToHaveHotel, setChoseNotToHaveHotel] = useState(false);
 
   function handleModalityChoice(isOnline, price) {
     setIsSelected({
       isOnline,
       price,
-      hashotelReservation: null,
+      hasHotelReservation: null,
       hotelPrice: null,
     });
     if (isOnline === false) {
       setIsPresential(true);
       setIsOnlineOption(false);
-      setHasntHotel(false);
-      setHasHotel(false);
+      setChoseNotToHaveHotel(false);
+      setChoseToHaveHotel(false);
     } else {
       setIsPresential(false);
-      setHasntHotel(false);
-      setHasHotel(false);
+      setChoseNotToHaveHotel(false);
+      setChoseToHaveHotel(false);
       setIsOnlineOption(true);
     }
   }
 
-  function handleHospitalityChoice(choice, hotelPrice) {
-    if (choice === true) {
-      setIsSelected({ ...isSelected, hashotelReservation: true, hotelPrice });
-      setHasHotel(true);
-      setHasntHotel(false);
+  function handleHospitalityChoice(hotelChoice, hotelPrice) {
+    if (hotelChoice) {
+      setIsSelected({ ...isSelected, hasHotelReservation: true, hotelPrice });
+      setChoseToHaveHotel(true);
+      setChoseNotToHaveHotel(false);
     } else {
       setIsSelected({
         ...isSelected,
-        hashotelReservation: false,
+        hasHotelReservation: false,
         hotelPrice: null,
       });
-      setHasntHotel(true);
-      setHasHotel(false);
+      setChoseNotToHaveHotel(true);
+      setChoseToHaveHotel(false);
     }
   }
 
@@ -83,14 +83,14 @@ export default function PaymentInformationForm() {
             <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
             <Choices>
               <Option
-                hasntHotel={hasntHotel}
+                choseNotToHaveHotel={choseNotToHaveHotel}
                 onClick={() => handleHospitalityChoice(false, 0)}
               >
                 <p>Sem Hotel</p>
                 <span>+ R$ 0</span>
               </Option>
               <Option
-                hasHotel={hasHotel}
+                choseToHaveHotel={choseToHaveHotel}
                 onClick={() => handleHospitalityChoice(true, 350)}
               >
                 <p>Com Hotel</p>
@@ -104,7 +104,7 @@ export default function PaymentInformationForm() {
           <></>
         )}
       </div>
-      {hasHotel || hasntHotel ? (
+      {choseToHaveHotel || choseNotToHaveHotel ? (
         <AccomodationFinishMessage isSelected={isSelected} />
       ) : (
         <div></div>
