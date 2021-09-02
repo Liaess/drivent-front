@@ -13,7 +13,6 @@ export default function PaymentInformationForm() {
     price: null,
     hashotelReservation: null,
     hotelPrice: null,
-    isPaid: null,
   });
   const [isPresential, setIsPresential] = useState(false);
   const [isOnlineOption, setIsOnlineOption] = useState(false);
@@ -26,7 +25,6 @@ export default function PaymentInformationForm() {
       price,
       hashotelReservation: null,
       hotelPrice: null,
-      isPaid: null,
     });
     if (isOnline === false) {
       setIsPresential(true);
