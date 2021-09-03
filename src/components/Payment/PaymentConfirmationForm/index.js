@@ -4,7 +4,7 @@ import { Main, Option, Finish } from "../utils/PaymentWrapper";
 import CreditCardForm from "./CreditCardForm";
 
 export default function PaymentConfirmationForm() {
-  const [canSubmit, SetCanSubmit] = useState(false);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   return (
     <Main>
@@ -18,7 +18,7 @@ export default function PaymentConfirmationForm() {
         </Summary>
 
         <h2>Ingresso escolhido</h2>
-        <CreditCardForm />
+        <CreditCardForm setCanSubmit={setCanSubmit} />
         <Finish disabled={canSubmit}>FINALIZAR PAGAMENTO</Finish>
       </div>
     </Main>

@@ -44,9 +44,6 @@ export default class CreditCardForm extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { issuer } = this.state;
-
-    console.log(this.state);
   };
 
   render() {

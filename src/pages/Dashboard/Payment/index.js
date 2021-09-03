@@ -1,5 +1,4 @@
 import { Switch, Route, useRouteMatch } from "react-router-dom";
-import useApi from "../../../hooks/useApi";
 import PaymentInformationForm from "../../../components/Payment/PaymentInformationForm";
 import PaymentConfirmationForm from "../../../components/Payment/PaymentConfirmationForm";
 
