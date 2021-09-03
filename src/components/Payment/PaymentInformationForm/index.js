@@ -1,11 +1,9 @@
-import { useState } from "react";
-import {
-  Main,
-  Choices,
-  Option,
-  Accommodation,
-} from "../PaymentInformationForm/PaymentWrapper";
+import { useEffect, useState } from "react";
+import { Main, Choices, Option, Accommodation } from "../utils/PaymentWrapper";
 import AccomodationFinishMessage from "./AccomodationFinishMessage";
+import useApi from "../../../hooks/useApi";
+import { toast } from "react-toastify";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 export default function PaymentInformationForm() {
   const [isSelected, setIsSelected] = useState({
@@ -18,6 +16,22 @@ export default function PaymentInformationForm() {
   const [isOnlineOption, setIsOnlineOption] = useState(false);
   const [choseToHaveHotel, setChoseToHaveHotel] = useState(false);
   const [choseNotToHaveHotel, setChoseNotToHaveHotel] = useState(false);
+  const { ticket } = useApi();
+  let history = useHistory();
+  const match = useRouteMatch();
+
+  useEffect(() => {
+    ticket
+      .getTicketInformation()
+      .then((res) => {
+        if (res.status === 200)
+          return history.push(`${match.path}/confirmation`);
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      });
+  }, []);
 
   function handleModalityChoice(isOnline, price) {
     setIsSelected({
@@ -52,6 +66,30 @@ export default function PaymentInformationForm() {
       });
       setChoseNotToHaveHotel(true);
       setChoseToHaveHotel(false);
+    }
+  }
+
+  function saveTicketInfos() {
+    if (
+      isPresential !== isOnlineOption &&
+      choseToHaveHotel !== choseNotToHaveHotel
+    ) {
+      const body = {
+        isOnline: isOnlineOption,
+        hasHotelReservation: choseToHaveHotel,
+      };
+      // eslint-disable-next-line no-console
+      ticket
+        .save(body)
+        .then(() => {
+          history.push(`${match.path}/confirmation`);
+          toast("Salvo com sucesso");
+        })
+        .catch((err) => {
+          toast("Não foi possível");
+          // eslint-disable-next-line no-console
+          console.log(err);
+        });
     }
   }
 
@@ -99,13 +137,19 @@ export default function PaymentInformationForm() {
             </Choices>
           </Accommodation>
         ) : isOnlineOption ? (
-          <AccomodationFinishMessage isSelected={isSelected} />
+          <AccomodationFinishMessage
+            isSelected={isSelected}
+            saveTicketInfos={saveTicketInfos}
+          />
         ) : (
           <></>
         )}
       </div>
       {choseToHaveHotel || choseNotToHaveHotel ? (
-        <AccomodationFinishMessage isSelected={isSelected} />
+        <AccomodationFinishMessage
+          isSelected={isSelected}
+          saveTicketInfos={saveTicketInfos}
+        />
       ) : (
         <div></div>
       )}
