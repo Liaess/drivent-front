@@ -3,7 +3,7 @@ import {
   Finish,
 } from "../PaymentInformationForm/PaymentWrapper";
 
-export default function AccomodationFinishMessage({ isSelected }) {
+export default function AccomodationFinishMessage({ isSelected, saveTicketInfos }) {
   return (
     <Accommodation>
       <h2>
@@ -11,7 +11,7 @@ export default function AccomodationFinishMessage({ isSelected }) {
         <span> R$ {isSelected.price + isSelected.hotelPrice}</span>. Agora é só
         confirmar:
       </h2>
-      <Finish>RESERVAR INGRESSO</Finish>
+      <Finish onClick={saveTicketInfos} >RESERVAR INGRESSO</Finish>
     </Accommodation>
   );
 }
