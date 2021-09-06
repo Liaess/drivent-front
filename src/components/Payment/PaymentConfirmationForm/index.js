@@ -1,25 +1,42 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { Main, Option, Finish } from "../utils/PaymentWrapper";
+import { useContext } from "react";
+import TicketContext from "../../../contexts/TicketContext";
+import { Main, Option } from "../utils/PaymentWrapper";
 import CreditCardForm from "./CreditCardForm";
+import PaymentConfirmationMessage from "./PaymentConfirmationMessage";
+import useApi from "../../../hooks/useApi";
 
 export default function PaymentConfirmationForm() {
-  const [canSubmit, setCanSubmit] = useState(false);
+  const { ticketData, setTicketData } = useContext(TicketContext);
+  const { ticket } = useApi();
 
   return (
     <Main>
       <div>
         <h1>Ingresso e pagamento</h1>
         <h2>Ingresso escolhido</h2>
-
         <Summary>
-          <p>Presencial + Com Hotel</p>
-          <span>R$ 600</span>
+          <p>{`${ticketData.isOnline ? "Online" : "Presencial"} + ${
+            ticketData.hasHotelReservation ? "Com Hotel" : "Sem Hotel"
+          }`}</p>
+          <span>
+            R$ $
+            {`${
+              (ticketData.isOnline ? 100 : 250) +
+              (ticketData.hasHotelReservation ? 350 : 0)
+            }`}
+          </span>
         </Summary>
-
-        <h2>Ingresso escolhido</h2>
-        <CreditCardForm setCanSubmit={setCanSubmit} />
-        <Finish disabled={canSubmit}>FINALIZAR PAGAMENTO</Finish>
+        <h2>Pagamento</h2>
+        {ticketData.isPaid ? (
+          <PaymentConfirmationMessage />
+        ) : (
+          <CreditCardForm
+            ticket={ticket}
+            ticketData={ticketData}
+            setTicketData={setTicketData}
+          />
+        )}
       </div>
     </Main>
   );
