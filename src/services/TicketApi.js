@@ -10,16 +10,16 @@ export default class TicketApi extends AuthenticatedApi {
     });
   }
 
-  updatePayment(body) {
-    return api.put("/payment/confirmation", {
+  getTicketInformation() {
+    return api.get("/payment", {
       headers: {
-        ...this.getAuthorizationHeader(body),
+        ...this.getAuthorizationHeader(),
       },
     });
   }
 
-  getTicketInformation() {
-    return api.get("/payment", {
+  updatePayment(body) {
+    return api.put("/payment/confirmation", body, {
       headers: {
         ...this.getAuthorizationHeader(),
       },
