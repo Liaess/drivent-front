@@ -3,9 +3,13 @@ import api from "../../services/api";
 import { useState, useEffect } from "react";
 import useApi from "../../hooks/useApi";
 import Room from "./RoomComponent";
+import Button from "../Form/Button";
+import ChosenRoom from "./ChosenRoom";
 
 export default function HotelInformationForm() {
   const [chosenHotel, setChosenHotel] = useState([]);
+  const [chosenRoom, setChosenRoom] = useState(false);
+  const [isReserved, setIsReserved] = useState(false);
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
 
@@ -28,43 +32,63 @@ export default function HotelInformationForm() {
     });
   }, []);
 
+  function reserve() {
+    //post
+    setIsReserved(true);
+  }
+
   return (
     <>
-      <Header>Escolha de hotel e quarto</Header>
-      <Body>
-        <h2>Primeiro, escolha o Hotel</h2>
+      {isReserved ? (
+        <>
+          <Header>Escolha de hotel e quarto</Header>
+          <ChosenRoom />
+        </>
+      ) : (
+        <>
+          <Header>Escolha de hotel e quarto</Header>
+          <Body>
+            <h2>Primeiro, escolha o Hotel</h2>
 
-        <HotelOptions>
-          {hotels.map((hotel, i) => {
-            return (
-              <HotelChoice
-                id={hotel.id}
-                chosenHotel={chosenHotel}
-                key={i}
-                onClick={() => {
-                  setChosenHotel(hotel.id);
-                  setRooms(hotel.rooms);
-                }}
-              >
-                <img alt={hotel.name} src={hotel.image} />
+            <HotelOptions>
+              {hotels.map((hotel, i) => {
+                return (
+                  <HotelChoice
+                    id={hotel.id}
+                    chosenHotel={chosenHotel}
+                    key={i}
+                    onClick={() => {
+                      setChosenHotel(hotel.id);
+                      setRooms(hotel.rooms);
+                    }}
+                  >
+                    <img alt={hotel.name} src={hotel.image} />
 
-                <h1>{hotel.name}</h1>
-                <p>Tipo de acomodação:</p>
-                <span>{hotel.roomTypes}</span>
+                    <h1>{hotel.name}</h1>
+                    <p>Tipo de acomodação:</p>
+                    <span>{hotel.roomTypes}</span>
 
-                <p>Vagas Disponíveis:</p>
-                <span>{hotel.totalAvailable}</span>
-              </HotelChoice>
-            );
-          })}
-        </HotelOptions>
+                    <p>Vagas Disponíveis:</p>
+                    <span>{hotel.totalAvailable}</span>
+                  </HotelChoice>
+                );
+              })}
+            </HotelOptions>
 
-        <h2>Otimo! Agora escolha seu quarto</h2>
+            <h2>Otimo! Agora escolha seu quarto</h2>
 
-        <RoomOptions chosenHotel={chosenHotel}>
-          <Room rooms={rooms} />
-        </RoomOptions>
-      </Body>
+            <RoomOptions chosenHotel={chosenHotel}>
+              <Room rooms={rooms} setRoom={setChosenRoom} />
+            </RoomOptions>
+            <Button
+              style={{ display: `${chosenRoom ? "block" : "none"}` }}
+              onClick={reserve}
+            >
+              Reservar Quarto
+            </Button>
+          </Body>
+        </>
+      )}
     </>
   );
 }
