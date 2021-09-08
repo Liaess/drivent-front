@@ -1,32 +1,34 @@
 import styled from "styled-components";
 import api from "../../services/api";
-import { BsFillPersonFill, BsPerson } from "react-icons/bs";
-import { useState, useEffect  } from "react";
+import { useState, useEffect } from "react";
 import useApi from "../../hooks/useApi";
-
-import resort from "./images/Resort.png";
-import palace from "./images/Palace.png";
-import world from "./images/World.png";
+import Room from "./RoomComponent";
 
 export default function HotelInformationForm() {
-  const [hotelWasSelected, setHotelWasSelected] = useState(false);
-  const [chosePalace, setChosePalace] = useState(false);
-  const [choseResort, setChoseResort] = useState(false);
-  const [choseWorld, setChoseWorld] = useState(false);
-  const [test, setTest] = useState(false);
+  const [chosenHotel, setChosenHotel] = useState([]);
+  const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [enrollmentInfo, setEnrollmentInfo] = useState([]);
 
-  const { enrollment } = useApi();
+  const { ticket } = useApi();
 
   useEffect(() => {
-    enrollment.getPersonalInformations().then((response) => console.log(response.data));
-    api.get("hotel/").then((response) => console.log(response.data));
+    ticket
+      .getTicketInformation()
+      .then((response) => console.log(response.data));
+    api.get("hotels/").then(({ data }) => {
+      data.forEach((h) => {
+        let totalAvailable = 0;
+        h.rooms.forEach((r) => {
+          totalAvailable += r.available;
+          r.selected = false;
+        });
+        h.totalAvailable = totalAvailable;
+      });
+      console.log(data);
+      setHotels(data);
+    });
   }, []);
-
-  function getHotelRooms(id) {
-    api.get(`hotel/${id}`).then((response) => {console.log(response.data); setRooms(response.data);});
-  }
 
   return (
     <>
@@ -43,78 +45,34 @@ export default function HotelInformationForm() {
         <h2>Primeiro, escolha o Hotel</h2>
 
         <HotelOptions>
-          <HotelChoice 
-            onClick={() => {
-              setHotelWasSelected(true);
-              setChoseResort(true);
-              setChosePalace(false);
-              setChoseWorld(false);
-              getHotelRooms(1);
-            }}
-            choseResort={choseResort}
-          >
-            <img src={resort} />
+          {hotels.map((hotel, i) => {
+            return (
+              <HotelChoice
+                id={hotel.id}
+                chosenHotel={chosenHotel}
+                key={i}
+                onClick={() => {
+                  setChosenHotel(hotel.id);
+                  setRooms(hotel.rooms);
+                }}
+              >
+                <img alt={hotel.name} src={hotel.image} />
 
-            <h1>Driven Resort</h1>
-            <p>Tipo de acomodação:</p>
-            <span>Single & Double</span>
+                <h1>{hotel.name}</h1>
+                <p>Tipo de acomodação:</p>
+                <span>{hotel.roomTypes}</span>
 
-            <p>Vagas Disponíveis:</p>
-            <span>100</span>
-          </HotelChoice>
-
-          <HotelChoice
-            onClick={() => {
-              setHotelWasSelected(true);
-              setChosePalace(true);
-              setChoseWorld(false);
-              setChoseResort(false);
-              getHotelRooms(2);
-            }}
-            chosePalace={chosePalace}
-          >
-            <img src={palace} />
-
-            <h1>Driven Palace</h1>
-            <p>Tipo de acomodação:</p>
-            <span>Single, Double & Triple</span>
-
-            <p>Vagas Disponíveis:</p>
-            <span>100</span>
-          </HotelChoice>
-
-          <HotelChoice
-            onClick={() => {
-              setHotelWasSelected(true);
-              setChoseWorld(true);
-              setChosePalace(false);
-              setChoseResort(false);
-              getHotelRooms(3);
-            }}
-            choseWorld={choseWorld}
-          >
-            <img src={world} />
-
-            <h1>Driven World</h1>
-
-            <p>Tipo de acomodação:</p>
-            <span>Single & Double</span>
-
-            <p>Vagas Disponíveis:</p>
-            <span>100</span>
-          </HotelChoice>
+                <p>Vagas Disponíveis:</p>
+                <span>{hotel.totalAvailable}</span>
+              </HotelChoice>
+            );
+          })}
         </HotelOptions>
 
         <h2>Otimo! Agora escolha seu quarto</h2>
-        <RoomOptions hotelWasSelected={hotelWasSelected}>
-          <Room>
-            <p>Numero</p>
-            {test? <BsFillPersonFill color="red" fontSize="1.5em" onClick={() => setTest(!test)}/> : <BsPerson fontSize="1.5em" onClick={(e) => console.log(e.currentTarget)}/>}
-          </Room>
-          <Room>
-            <p>Numero</p>
-            <BsFillPersonFill fontSize="1.5em" />
-          </Room>
+
+        <RoomOptions chosenHotel={chosenHotel}>
+          <Room rooms={rooms} />
         </RoomOptions>
       </Body>
     </>
@@ -143,13 +101,7 @@ const HotelChoice = styled.div`
   height: 265px;
   border-radius: 5px;
   background-color: ${(props) =>
-    props.choseResort
-      ? "#FFEED2"
-      : props.chosePalace
-        ? "#FFEED2"
-        : props.choseWorld
-          ? "#FFEED2"
-          : "#f1f1f1"};
+    props.id === props.chosenHotel ? "#FFEED2" : "#f1f1f1"};
   margin-right: 40px;
   font-size: 12px;
   color: #3c3c3c;
@@ -175,20 +127,8 @@ const HotelChoice = styled.div`
 `;
 
 const RoomOptions = styled.div`
-  display: ${(props) => (props.hotelWasSelected ? "flex" : "none")};
+  display: ${(props) => (props.chosenHotel ? "flex" : "none")};
   flex-flow: row wrap;
-`;
-
-const Room = styled.div`
-  width: 190px;
-  height: 45px;
-  border-radius: 5px;
-  border: solid 1px #cecece;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
 `;
 
 const NotAbleToMessage = styled.div`
@@ -196,9 +136,9 @@ const NotAbleToMessage = styled.div`
   justify-content: center;
   align-items: center;
 
-  p{
+  p {
     font-size: 20px;
-    color: #8E8E8E;
+    color: #8e8e8e;
     line-height: 23px;
   }
 `;

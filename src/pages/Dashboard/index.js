@@ -1,10 +1,5 @@
 import { useContext } from "react";
-import {
-  Switch,
-  Route,
-  Redirect,
-  useRouteMatch
-} from "react-router-dom";
+import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import EventInfoContext from "../../contexts/EventInfoContext";
@@ -32,7 +27,7 @@ export default function Dashboard() {
             <FillSubscription />
           </Route>
 
-          <Route path={`${match.path}/payment`} exact>
+          <Route path={`${match.path}/payment`}>
             <Payment />
           </Route>
 
