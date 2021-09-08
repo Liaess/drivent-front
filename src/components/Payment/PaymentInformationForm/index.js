@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import { Main, Choices, Option, Accommodation } from "../utils/PaymentWrapper";
 import AccomodationFinishMessage from "./AccomodationFinishMessage";
 import useApi from "../../../hooks/useApi";
+import TicketContext from "../../../contexts/TicketContext";
 import { toast } from "react-toastify";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -16,22 +17,10 @@ export default function PaymentInformationForm() {
   const [isOnlineOption, setIsOnlineOption] = useState(false);
   const [choseToHaveHotel, setChoseToHaveHotel] = useState(false);
   const [choseNotToHaveHotel, setChoseNotToHaveHotel] = useState(false);
+  const { setTicketData } = useContext(TicketContext);
   const { ticket } = useApi();
   let history = useHistory();
   const match = useRouteMatch();
-
-  useEffect(() => {
-    ticket
-      .getTicketInformation()
-      .then((res) => {
-        if (res.status === 200)
-          return history.push(`${match.path}/confirmation`);
-      })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.log(err);
-      });
-  }, []);
 
   function handleModalityChoice(isOnline, price) {
     setIsSelected({
@@ -78,10 +67,10 @@ export default function PaymentInformationForm() {
         isOnline: isOnlineOption,
         hasHotelReservation: choseToHaveHotel,
       };
-      // eslint-disable-next-line no-console
       ticket
         .save(body)
-        .then(() => {
+        .then((res) => {
+          setTicketData(res.data);
           history.push(`${match.path}/confirmation`);
           toast("Salvo com sucesso");
         })

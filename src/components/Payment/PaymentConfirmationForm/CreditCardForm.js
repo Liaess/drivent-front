@@ -1,7 +1,17 @@
 import React from "react";
 import Cards from "react-credit-cards";
-import styled from "styled-components";
+import { Finish } from "../utils/PaymentWrapper";
 import "react-credit-cards/es/styles-compiled.css";
+import {
+  CreditCardFormHolder,
+  ButtonSeparator,
+  CreditCardFormFields,
+  GeneralCreditCardInput,
+  ValidThruInput,
+  CVCInput,
+  FillingExample,
+  FormLastLine,
+} from "./FormStyles";
 import {
   formatCreditCardNumber,
   formatCVC,
@@ -44,104 +54,74 @@ export default class CreditCardForm extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.props.ticket
+      .updatePayment({ ...this.props.ticketData, isPaid: true })
+      .then((res) => {
+        this.props.setTicketData(res.data);
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      });
   };
 
   render() {
     return (
-      <CreditCardFormHolder id="PaymentForm">
-        <Cards
-          cvc={this.state.cvc}
-          expiry={this.state.expiry}
-          focused={this.state.focus}
-          name={this.state.name}
-          number={this.state.number}
-          callback={this.handleCallback}
-        />
-        <CreditCardFormFields onSubmit={this.handleSubmit}>
-          <div>
-            <GeneralCreditCardInput
-              type="tel"
-              name="number"
-              placeholder="Card Number"
-              pattern="[\d| ]{16,22}"
-              required
-              onChange={this.handleInputChange}
-              onFocus={this.handleInputFocus}
-            />
-            <FillingExample>E.g.: 49..., 51..., 36..., 37...</FillingExample>
-          </div>
-          <GeneralCreditCardInput
-            type="text"
-            name="name"
-            placeholder="Name"
-            required
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputFocus}
+      <CreditCardFormHolder onSubmit={this.handleSubmit} id="PaymentForm">
+        <ButtonSeparator>
+          <Cards
+            cvc={this.state.cvc}
+            expiry={this.state.expiry}
+            focused={this.state.focus}
+            name={this.state.name}
+            number={this.state.number}
+            callback={this.handleCallback}
           />
-          <FormLastLine>
-            <ValidThruInput
-              type="tel"
-              name="expiry"
-              placeholder="Valid Thru"
-              pattern="\d\d/\d\d"
+          <CreditCardFormFields>
+            <div>
+              <GeneralCreditCardInput
+                type="tel"
+                name="number"
+                placeholder="Card Number"
+                pattern="[\d| ]{16,22}"
+                required
+                onChange={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+              />
+              <FillingExample>E.g.: 49..., 51..., 36..., 37...</FillingExample>
+            </div>
+            <GeneralCreditCardInput
+              type="text"
+              name="name"
+              placeholder="Name"
               required
               onChange={this.handleInputChange}
               onFocus={this.handleInputFocus}
             />
-            <CVCInput
-              type="tel"
-              name="cvc"
-              placeholder="CVC"
-              pattern="\d{3,4}"
-              required
-              onChange={this.handleInputChange}
-              onFocus={this.handleInputFocus}
-            />
-          </FormLastLine>
-        </CreditCardFormFields>
+            <FormLastLine>
+              <ValidThruInput
+                type="tel"
+                name="expiry"
+                placeholder="Valid Thru"
+                pattern="\d\d/\d\d"
+                required
+                onChange={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+              />
+              <CVCInput
+                type="tel"
+                name="cvc"
+                placeholder="CVC"
+                pattern="\d{3,4}"
+                required
+                onChange={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+              />
+            </FormLastLine>
+          </CreditCardFormFields>
+        </ButtonSeparator>
+        <Finish>FINALIZAR PAGAMENTO</Finish>
       </CreditCardFormHolder>
     );
   }
 }
-
-const CreditCardFormHolder = styled.div`
-  display: flex;
-  margin-bottom: 60px;
-  padding-left: 0;
-  max-width: 720px;
-`;
-
-const CreditCardFormFields = styled.form`
-  display: flex;
-  flex-direction: column;
-  margin-left: 30px;
-  justify-content: space-around;
-`;
-
-const GeneralCreditCardInput = styled.input`
-  width: 400px;
-  height: 40px;
-  border-radius: 5px;
-  border: solid 1px #999999;
-  padding-left: 8px;
-`;
-
-const ValidThruInput = styled(GeneralCreditCardInput)`
-  width: 270px;
-  margin-right: 30px;
-`;
-
-const CVCInput = styled(GeneralCreditCardInput)`
-  width: 100px;
-`;
-
-const FillingExample = styled.p`
-  margin-top: 3px;
-  padding-left: 4px;
-  color: #999999;
-  font-size: 12px;
-`;
-
-const FormLastLine = styled.div`
-  display: flex;
-`;
