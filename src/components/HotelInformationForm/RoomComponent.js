@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { useEffect, useState } from "react";
 
-export default function Room({ rooms }) {
+export default function Room({ rooms, setRoom, hotel }) {
   const [places, setPlaces] = useState([]);
   const [chosenRoom, setChosenRoom] = useState([]);
 
@@ -14,11 +14,13 @@ export default function Room({ rooms }) {
       });
     });
     newPlaces[j][i].selectByUser = true;
+    setRoom(newPlaces[j][i]);
     setPlaces(newPlaces);
   }
 
   useEffect(() => {
     object();
+    setRoom(false);
     setChosenRoom("");
   }, [rooms]);
 
@@ -41,6 +43,10 @@ export default function Room({ rooms }) {
         isReserved: false,
         selectByUser: false,
         number: eachRoom.number,
+        type: eachRoom.type,
+        available: eachRoom.available,
+        hotel: hotel.name,
+        hotelImage: hotel.image,
       });
     }
 
@@ -52,12 +58,20 @@ export default function Room({ rooms }) {
           isReserved: true,
           isDisabled: true,
           number: eachRoom.number,
+          type: eachRoom.type,
+          available: eachRoom.available,
+          hotel: hotel.name,
+          hotelImage: hotel.image,
         });
       } else {
         allPlaces.push({
           place: newIndex,
           isReserved: true,
           number: eachRoom.number,
+          type: eachRoom.type,
+          available: eachRoom.available,
+          hotel: hotel.name,
+          hotelImage: hotel.image,
         });
       }
     }
@@ -82,7 +96,7 @@ export default function Room({ rooms }) {
                 return (
                   <div key={i}>
                     {p.isReserved ? (
-                      <BsPersonFill fontSize="1.5em"/>
+                      <BsPersonFill fontSize="1.5em" />
                     ) : p.selectByUser ? (
                       <BsPersonFill fontSize="1.5em" color="#FF4791" />
                     ) : (
