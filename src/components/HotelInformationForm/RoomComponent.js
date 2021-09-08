@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function Room({ rooms }) {
   const [places, setPlaces] = useState([]);
+  const [chosenRoom, setChosenRoom] = useState([]);
 
   function checkIsSelected(j, i) {
     const newPlaces = [...places];
@@ -18,6 +19,7 @@ export default function Room({ rooms }) {
 
   useEffect(() => {
     object();
+    setChosenRoom("");
   }, [rooms]);
 
   function object() {
@@ -44,13 +46,21 @@ export default function Room({ rooms }) {
 
     for (let i = 0; i < eachRoom.maxCapacity - eachRoom.available; i++) {
       const newIndex = allPlaces.length;
-      allPlaces.push(...allPlaces, {
-        place: newIndex,
-        isReserved: true,
-        number: eachRoom.number,
-      });
+      if (eachRoom.available === 0) {
+        allPlaces.push({
+          place: newIndex,
+          isReserved: true,
+          isDisabled: true,
+          number: eachRoom.number,
+        });
+      } else {
+        allPlaces.push({
+          place: newIndex,
+          isReserved: true,
+          number: eachRoom.number,
+        });
+      }
     }
-
     return allPlaces;
   }
 
@@ -58,24 +68,36 @@ export default function Room({ rooms }) {
     <>
       {places.map((r, j) => {
         return (
-          <Container>
-            <p>{r[0].number}</p>
-            {r.map((p, i) => {
-              return (
-                <>
-                  {p.isReserved ? (
-                    <BsPersonFill fontSize="1.5em" color="black" />
-                  ) : p.selectByUser ? (
-                    <BsPersonFill fontSize="1.5em" color="#FF4791" />
-                  ) : (
-                    <BsPerson
-                      fontSize="1.5em"
-                      onClick={() => checkIsSelected(j, i)}
-                    />
-                  )}
-                </>
-              );
-            })}
+          <Container
+            key={j}
+            id={j}
+            chosenRoom={chosenRoom}
+            disabled={r[0].isDisabled}
+          >
+            <div>
+              <p>{r[0].number}</p>
+            </div>
+            <PersonIcons>
+              {r.map((p, i) => {
+                return (
+                  <div key={i}>
+                    {p.isReserved ? (
+                      <BsPersonFill fontSize="1.5em" color="black" />
+                    ) : p.selectByUser ? (
+                      <BsPersonFill fontSize="1.5em" color="#FF4791" />
+                    ) : (
+                      <BsPerson
+                        fontSize="1.5em"
+                        onClick={() => {
+                          checkIsSelected(j, i);
+                          setChosenRoom(j);
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </PersonIcons>
           </Container>
         );
       })}
@@ -90,7 +112,24 @@ const Container = styled.div`
   border: solid 1px #cecece;
   margin-bottom: 10px;
   margin-right: 10px;
+  padding-left: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${(props) =>
+    props.disabled
+      ? "#E9E9E9"
+      : props.id === props.chosenRoom
+        ? "#FFEED2"
+        : ""};
+  svg {
+    cursor: pointer;
+    /* color: ${(props) => (props.disabled ? "pink" : "red")}; */
+  }
+`;
+
+const PersonIcons = styled.div`
+  width: 120px;
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
 `;

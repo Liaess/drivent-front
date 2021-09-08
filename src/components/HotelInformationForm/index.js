@@ -8,7 +8,6 @@ export default function HotelInformationForm() {
   const [chosenHotel, setChosenHotel] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [enrollmentInfo, setEnrollmentInfo] = useState([]);
 
   const { ticket } = useApi();
 
@@ -25,7 +24,6 @@ export default function HotelInformationForm() {
         });
         h.totalAvailable = totalAvailable;
       });
-      console.log(data);
       setHotels(data);
     });
   }, []);
@@ -33,14 +31,6 @@ export default function HotelInformationForm() {
   return (
     <>
       <Header>Escolha de hotel e quarto</Header>
-
-      {/* <NotAbleToMessage>
-        <p>Sua modalidade de ingresso não inclui hospedagem Prossiga para a escolha de atividades</p>
-      </NotAbleToMessage>
-      <NotAbleToMessage>
-        <p>Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</p>
-      </NotAbleToMessage> */}
-
       <Body>
         <h2>Primeiro, escolha o Hotel</h2>
 
