@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { useEffect, useState } from "react";
 
-export default function Room({ rooms, setRoom }) {
+export default function Room({ rooms, setRoom, hotel }) {
   const [places, setPlaces] = useState([]);
   const [chosenRoom, setChosenRoom] = useState([]);
 
@@ -45,6 +45,8 @@ export default function Room({ rooms, setRoom }) {
         number: eachRoom.number,
         type: eachRoom.type,
         available: eachRoom.available,
+        hotel: hotel.name,
+        hotelImage: hotel.image,
       });
     }
 
@@ -58,6 +60,8 @@ export default function Room({ rooms, setRoom }) {
           number: eachRoom.number,
           type: eachRoom.type,
           available: eachRoom.available,
+          hotel: hotel.name,
+          hotelImage: hotel.image,
         });
       } else {
         allPlaces.push({
@@ -66,6 +70,8 @@ export default function Room({ rooms, setRoom }) {
           number: eachRoom.number,
           type: eachRoom.type,
           available: eachRoom.available,
+          hotel: hotel.name,
+          hotelImage: hotel.image,
         });
       }
     }

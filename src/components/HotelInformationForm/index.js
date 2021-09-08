@@ -42,7 +42,10 @@ export default function HotelInformationForm() {
       {isReserved ? (
         <>
           <Header>Escolha de hotel e quarto</Header>
-          <ChosenRoom />
+          <Body>
+            <h2>Você já escolheu seu quarto:</h2>
+            <ChosenRoom room={chosenRoom}/>
+          </Body>
         </>
       ) : (
         <>
@@ -58,7 +61,7 @@ export default function HotelInformationForm() {
                     chosenHotel={chosenHotel}
                     key={i}
                     onClick={() => {
-                      setChosenHotel(hotel.id);
+                      setChosenHotel(hotel);
                       setRooms(hotel.rooms);
                     }}
                   >
@@ -78,7 +81,7 @@ export default function HotelInformationForm() {
             <h2>Otimo! Agora escolha seu quarto</h2>
 
             <RoomOptions chosenHotel={chosenHotel}>
-              <Room rooms={rooms} setRoom={setChosenRoom} />
+              <Room rooms={rooms} hotel={chosenHotel} setRoom={setChosenRoom} />
             </RoomOptions>
             <Button
               style={{ display: `${chosenRoom ? "block" : "none"}` }}
@@ -115,7 +118,7 @@ const HotelChoice = styled.div`
   height: 265px;
   border-radius: 5px;
   background-color: ${(props) =>
-    props.id === props.chosenHotel ? "#FFEED2" : "#f1f1f1"};
+    props.id === props.chosenHotel.id ? "#FFEED2" : "#f1f1f1"};
   margin-right: 40px;
   font-size: 12px;
   color: #3c3c3c;
