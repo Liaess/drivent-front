@@ -82,7 +82,7 @@ export default function Room({ rooms }) {
                 return (
                   <div key={i}>
                     {p.isReserved ? (
-                      <BsPersonFill fontSize="1.5em" color="black" />
+                      <BsPersonFill fontSize="1.5em"/>
                     ) : p.selectByUser ? (
                       <BsPersonFill fontSize="1.5em" color="#FF4791" />
                     ) : (
@@ -124,7 +124,7 @@ const Container = styled.div`
         : ""};
   svg {
     cursor: pointer;
-    /* color: ${(props) => (props.disabled ? "pink" : "red")}; */
+    color: ${(props) => (props.disabled ? "#8C8C8C" : "")};
   }
 `;
 
