@@ -4,9 +4,10 @@ import ConditionalRoute from "../../../components/Router/ConditionalRoute";
 
 import TicketContext, { TicketProvider } from "../../../contexts/TicketContext";
 
-// import UnathourizedToChoose from "../../../components/Payment/PaymentInformationForm";
 import UnathourizedToChoose from "../../../components/Activities/UnathourizedToChoose";
+import OnlineModalityTicket from "../../../components/Activities/OnlineModalityTicket";
 import { useContext } from "react";
+import ScheduleActivities from "../../../components/Activities/ScheduleActivities";
 
 export default function Activities() {
   const match = useRouteMatch();
@@ -15,36 +16,54 @@ export default function Activities() {
     <TicketProvider>
       <Switch>
         <ConditionalRoute
-          check={ensureExistsPaymentInfo}
-          path={`${match.path}`}
+          check={ensureTicketIsNotPayed}
+          path={`${match.path}/unauthorized`}
           exact
         >
           <UnathourizedToChoose />
         </ConditionalRoute>
         <ConditionalRoute
-          check={ensureNotExistsPaymentInfo}
-          path={`${match.path}/confirmation`}
+          check={ensureTicketIsOnlineModality}
+          path={`${match.path}/online`}
           exact
         >
-          <UnathourizedToChoose />
+          <OnlineModalityTicket />
+        </ConditionalRoute>
+        <ConditionalRoute
+          check={ensureTicketIsPresencialModality}
+          path={`${match.path}`}
+          exact
+        >
+          <ScheduleActivities />
         </ConditionalRoute>
       </Switch>
     </TicketProvider>
   );
 }
 
-function ensureNotExistsPaymentInfo() {
+function ensureTicketIsNotPayed() {
   const { ticketData } = useContext(TicketContext);
-  // eslint-disable-next-line no-console
-  console.log(ticketData);
-
-  return [{ to: "/dashboard/activities", check: () => !!ticketData?.isPaid }];
+  return [
+    { to: "/dashboard/activities/online", check: () => !(ticketData?.isPaid && ticketData?.isOnline) },
+    { to: "/dashboard/activities", check: () => !(ticketData?.isPaid && !ticketData?.isOnline) },
+  ];
 }
 
-function ensureExistsPaymentInfo() {
+function ensureTicketIsOnlineModality() {
+  const { ticketData } = useContext(TicketContext);
+  return [
+    { to: "/dashboard/activities", check: () => !(ticketData?.isPaid && !ticketData?.isOnline) },
+    { to: "/dashboard/activities/unauthorized", check: () => !!ticketData?.isPaid }
+  ];
+}
+
+function ensureTicketIsPresencialModality() {
   const { ticketData } = useContext(TicketContext);
   // eslint-disable-next-line no-console
-  console.log(ticketData);
+  console.log(ticketData?.isPaid);
 
-  return [{ to: "/dashboard/activities/schedule", check: () => !ticketData?.isPaid }];
+  return [
+    { to: "/dashboard/activities/online", check: () => !(ticketData?.isPaid && ticketData?.isOnline) },
+    { to: "/dashboard/activities/unauthorized", check: () => !!ticketData?.isPaid }
+  ];
 }

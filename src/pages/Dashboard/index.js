@@ -35,7 +35,7 @@ export default function Dashboard() {
             <Hotel />
           </Route>
 
-          <Route path={`${match.path}/activities`} exact>
+          <Route path={`${match.path}/activities`} >
             <Activities />
           </Route>
 

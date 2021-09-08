@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-export default function UnathourizedToChoose() {
+export default function ScheduleActivities() {
   return (
     <Message>
-      <h1>Você precisa ter confirmado pagamento antes de fazer a escolha de atividades</h1>
+      <h1>Em construção.</h1>
     </Message>
   );
 }
@@ -15,7 +15,7 @@ const Message = styled.div`
     height: 100%;
     h1 {
         color: #8E8E8E;
-        width: 510px;
+        width: 411px;
         font-size: 20px;
     }
 `;

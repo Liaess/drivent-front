@@ -36,7 +36,7 @@ export default function PaymentInformationForm() {
       setChoseToHaveHotel(false);
     } else {
       setIsPresential(false);
-      setChoseNotToHaveHotel(false);
+      setChoseNotToHaveHotel(true);
       setChoseToHaveHotel(false);
       setIsOnlineOption(true);
     }
