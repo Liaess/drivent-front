@@ -1,30 +1,46 @@
-import { Switch, Route, useRouteMatch } from "react-router-dom";
+import { Switch, useRouteMatch } from "react-router-dom";
+
+import ConditionalRoute from "../../../components/Router/ConditionalRoute";
+
+import TicketContext, { TicketProvider } from "../../../contexts/TicketContext";
+
 import PaymentInformationForm from "../../../components/Payment/PaymentInformationForm";
 import PaymentConfirmationForm from "../../../components/Payment/PaymentConfirmationForm";
+import { useContext } from "react";
 
 export default function Payment() {
   const match = useRouteMatch();
-  
-  //const { ticket } = useApi();
-
-  // ticket
-  //   .getTicketInformation()
-  //   .then((res) => {
-  //     const ticketInfo = res.data;
-  //   })
-  //   .catch((err) => {
-  //     // eslint-disable-next-line no-console
-  //     console.log(err);
-  //   });
 
   return (
-    <Switch>
-      <Route path={`${match.path}`} exact>
-        <PaymentInformationForm />
-      </Route>
-      <Route path={`${match.path}/confirmation`} exact>
-        <PaymentConfirmationForm />
-      </Route>
-    </Switch>
+    <TicketProvider>
+      <Switch>
+        <ConditionalRoute
+          check={ensureExistsTicketInfo}
+          path={`${match.path}`}
+          exact
+        >
+          <PaymentInformationForm />
+        </ConditionalRoute>
+        <ConditionalRoute
+          check={ensureNotExistsTicketInfo}
+          path={`${match.path}/confirmation`}
+          exact
+        >
+          <PaymentConfirmationForm />
+        </ConditionalRoute>
+      </Switch>
+    </TicketProvider>
   );
+}
+
+function ensureNotExistsTicketInfo() {
+  const { ticketData } = useContext(TicketContext);
+
+  return [{ to: "/dashboard/payment", check: () => !!ticketData }];
+}
+
+function ensureExistsTicketInfo() {
+  const { ticketData } = useContext(TicketContext);
+
+  return [{ to: "/dashboard/payment/confirmation", check: () => !ticketData }];
 }
