@@ -4,7 +4,7 @@ import ConditionalRoute from "../../../components/Router/ConditionalRoute";
 
 import TicketContext, { TicketProvider } from "../../../contexts/TicketContext";
 
-import UnathourizedToChoose from "../../../components/Activities/UnathourizedToChoose";
+import UnauthorizedToChoose from "../../../components/Activities/UnauthorizedToChoose";
 import { useContext } from "react";
 import ScheduleActivities from "../../../components/Activities/ScheduleActivities";
 
@@ -15,11 +15,11 @@ export default function Activities() {
     <TicketProvider>
       <Switch>
         <ConditionalRoute
-          check={ensureTicketIsNotPayed}
+          check={ensureTicketDoesntAllowChooseActivities}
           path={`${match.path}/unauthorized`}
           exact
         >
-          <UnathourizedToChoose />
+          <UnauthorizedToChoose />
         </ConditionalRoute>
         <ConditionalRoute
           check={ensureTicketIsPresencialModality}
@@ -33,7 +33,7 @@ export default function Activities() {
   );
 }
 
-function ensureTicketIsNotPayed() {
+function ensureTicketDoesntAllowChooseActivities() {
   const { ticketData } = useContext(TicketContext);
   return [
     { to: "/dashboard/activities", check: () => !(ticketData?.isPaid && !ticketData?.isOnline) },

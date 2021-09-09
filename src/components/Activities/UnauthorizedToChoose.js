@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useContext } from "react";
 import TicketContext from "../../contexts/TicketContext";
 
-export default function UnathourizedToChoose() {
+export default function UnauthorizedToChoose() {
   const { ticketData } = useContext(TicketContext);
 
   // eslint-disable-next-line no-console
