@@ -13,13 +13,10 @@ export default function HotelInformationForm() {
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
 
-  const { ticket } = useApi();
+  const { hotel } = useApi();
 
   useEffect(() => {
-    ticket
-      .getTicketInformation()
-      .then((response) => console.log(response.data));
-    api.get("hotels/").then(({ data }) => {
+    hotel.getHotelsInformation().then(({ data }) => {
       data.forEach((h) => {
         let totalAvailable = 0;
         h.rooms.forEach((r) => {
@@ -44,7 +41,7 @@ export default function HotelInformationForm() {
           <Header>Escolha de hotel e quarto</Header>
           <Body>
             <h2>Você já escolheu seu quarto:</h2>
-            <ChosenRoom room={chosenRoom}/>
+            <ChosenRoom room={chosenRoom} />
           </Body>
         </>
       ) : (
