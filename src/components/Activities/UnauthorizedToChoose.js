@@ -5,13 +5,10 @@ import TicketContext from "../../contexts/TicketContext";
 export default function UnauthorizedToChoose() {
   const { ticketData } = useContext(TicketContext);
 
-  // eslint-disable-next-line no-console
-  console.log(ticketData);
-
   return (
     <Message>
       {
-        ticketData.isOnline ?
+        ticketData?.isOnline ?
           <h1>Sua modalidade de ingresso não necessita escolher atividade. Você terá acesso a todas as atividades.</h1> :
           <h1>Você precisa ter confirmado pagamento antes de fazer a escolha de atividades</h1>
       }
