@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Route, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 

@@ -1,9 +1,20 @@
 import styled from "styled-components";
+import { useContext } from "react";
+import TicketContext from "../../contexts/TicketContext";
 
 export default function UnathourizedToChoose() {
+  const { ticketData } = useContext(TicketContext);
+
+  // eslint-disable-next-line no-console
+  console.log(ticketData);
+
   return (
     <Message>
-      <h1>Você precisa ter confirmado pagamento antes de fazer a escolha de atividades</h1>
+      {
+        ticketData.isOnline ?
+          <h1>Sua modalidade de ingresso não necessita escolher atividade. Você terá acesso a todas as atividades.</h1> :
+          <h1>Você precisa ter confirmado pagamento antes de fazer a escolha de atividades</h1>
+      }
     </Message>
   );
 }
@@ -17,5 +28,6 @@ const Message = styled.div`
         color: #8E8E8E;
         width: 510px;
         font-size: 20px;
+        text-align: center;
     }
 `;
