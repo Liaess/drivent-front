@@ -47,6 +47,7 @@ export default function Room({ rooms, setRoom, hotel }) {
         available: eachRoom.available,
         hotel: hotel.name,
         hotelImage: hotel.image,
+        roomId: eachRoom.id
       });
     }
 
@@ -62,6 +63,7 @@ export default function Room({ rooms, setRoom, hotel }) {
           available: eachRoom.available,
           hotel: hotel.name,
           hotelImage: hotel.image,
+          roomId: eachRoom.id
         });
       } else {
         allPlaces.push({
@@ -72,6 +74,7 @@ export default function Room({ rooms, setRoom, hotel }) {
           available: eachRoom.available,
           hotel: hotel.name,
           hotelImage: hotel.image,
+          roomId: eachRoom.id
         });
       }
     }

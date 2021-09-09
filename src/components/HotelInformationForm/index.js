@@ -27,11 +27,17 @@ export default function HotelInformationForm() {
       });
       setHotels(data);
     });
+
+    // hotel.getRoomInformation().then(({ data }) => {
+    //   // setIsReserved(true);
+    // });
   }, []);
 
   function reserve() {
-    //post
-    setIsReserved(true);
+    const body = { roomId: chosenRoom.roomId };
+    hotel.save(body).then(() => {
+      setIsReserved(true);
+    });
   }
 
   return (
