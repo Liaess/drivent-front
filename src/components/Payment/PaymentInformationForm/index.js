@@ -125,11 +125,6 @@ export default function PaymentInformationForm() {
               </Option>
             </Choices>
           </Accommodation>
-        ) : isOnlineOption ? (
-          <AccomodationFinishMessage
-            isSelected={isSelected}
-            saveTicketInfos={saveTicketInfos}
-          />
         ) : (
           <></>
         )}
