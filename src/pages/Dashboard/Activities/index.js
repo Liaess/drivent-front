@@ -4,7 +4,7 @@ import ConditionalRoute from "../../../components/Router/ConditionalRoute";
 
 import TicketContext from "../../../contexts/TicketContext";
 
-import UnathorizedToChoose from "../../../components/Activities/UnathorizedToChoose";
+import UnauthorizedToChoose from "../../../components/Activities/UnauthorizedToChoose";
 import { useContext } from "react";
 import ScheduleActivities from "../../../components/Activities/ScheduleActivities";
 
@@ -14,11 +14,11 @@ export default function Activities() {
   return (
     <Switch>
       <ConditionalRoute
-        check={ensureTicketIsNotPayed}
+        check={ensureTicketDoesntAllowChooseActivities}
         path={`${match.path}/unauthorized`}
         exact
       >
-        <UnathorizedToChoose />
+        <UnauthorizedToChoose />
       </ConditionalRoute>
       <ConditionalRoute
         check={ensureTicketIsPresentialModality}
@@ -31,7 +31,7 @@ export default function Activities() {
   );
 }
 
-function ensureTicketIsNotPayed() {
+function ensureTicketDoesntAllowChooseActivities() {
   const { ticketData } = useContext(TicketContext);
   return [
     {
