@@ -2,6 +2,7 @@ import { Switch, useRouteMatch } from "react-router-dom";
 
 import ConditionalRoute from "../../../components/Router/ConditionalRoute";
 
+import EnrollmentContext from "../../../contexts/EnrollmentContext";
 import TicketContext from "../../../contexts/TicketContext";
 
 import UnauthorizedToChoose from "../../../components/Activities/UnauthorizedToChoose";
@@ -32,22 +33,27 @@ export default function Activities() {
 }
 
 function ensureTicketDoesntAllowChooseActivities() {
+  const { enrollmentData } = useContext(EnrollmentContext);
   const { ticketData } = useContext(TicketContext);
+
   return [
     {
       to: "/dashboard/activities",
-      check: () => !(ticketData?.isPaid && !ticketData?.isOnline),
+      check: () =>
+        !(enrollmentData && ticketData?.isPaid && !ticketData?.isOnline),
     },
   ];
 }
 
 function ensureTicketIsPresentialModality() {
+  const { enrollmentData } = useContext(EnrollmentContext);
   const { ticketData } = useContext(TicketContext);
 
   return [
     {
       to: "/dashboard/activities/unauthorized",
-      check: () => !(!ticketData?.isPaid || ticketData?.isOnline),
+      check: () =>
+        !(!enrollmentData || !ticketData?.isPaid || ticketData?.isOnline),
     },
   ];
 }
