@@ -7,7 +7,7 @@ export default function PaymentConfirmationMessage() {
       <ConfirmationIcon />
       <ConfirmationText>
         <strong>Pagamento confirmado!</strong>
-        <p>Prossiga para escolha de hospedagem e atividades</p>
+        <span>Prossiga para escolha de hospedagem e atividades</span>
       </ConfirmationText>
     </MessageHolder>
   );

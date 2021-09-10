@@ -47,7 +47,7 @@ export default function Room({ rooms, setRoom, hotel }) {
         available: eachRoom.available,
         hotel: hotel.name,
         hotelImage: hotel.image,
-        roomId: eachRoom.id
+        roomId: eachRoom.id,
       });
     }
 
@@ -63,7 +63,7 @@ export default function Room({ rooms, setRoom, hotel }) {
           available: eachRoom.available,
           hotel: hotel.name,
           hotelImage: hotel.image,
-          roomId: eachRoom.id
+          roomId: eachRoom.id,
         });
       } else {
         allPlaces.push({
@@ -74,7 +74,7 @@ export default function Room({ rooms, setRoom, hotel }) {
           available: eachRoom.available,
           hotel: hotel.name,
           hotelImage: hotel.image,
-          roomId: eachRoom.id
+          roomId: eachRoom.id,
         });
       }
     }
@@ -99,7 +99,7 @@ export default function Room({ rooms, setRoom, hotel }) {
                 return (
                   <div key={i}>
                     {p.isReserved ? (
-                      <BsPersonFill fontSize="1.5em" />
+                      <BsPersonFill fontSize="1.5em"/>
                     ) : p.selectByUser ? (
                       <BsPersonFill fontSize="1.5em" color="#FF4791" />
                     ) : (
@@ -140,7 +140,7 @@ const Container = styled.div`
         ? "#FFEED2"
         : ""};
   svg {
-    cursor: pointer;
+    cursor: ${(props) => (props.disabled ? "" : "pointer")};
     color: ${(props) => (props.disabled ? "#8C8C8C" : "")};
   }
 `;

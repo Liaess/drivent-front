@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import api from "../../services/api";
 import { useState, useEffect } from "react";
 import useApi from "../../hooks/useApi";
 import Room from "./RoomComponent";
@@ -10,12 +9,19 @@ export default function HotelInformationForm() {
   const [chosenHotel, setChosenHotel] = useState([]);
   const [chosenRoom, setChosenRoom] = useState(false);
   const [isReserved, setIsReserved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
 
   const { hotel } = useApi();
 
   useEffect(() => {
+    hotel.getRoomInformation().then(({ data }) => {
+      setChosenRoom(data[0].room);
+      setIsReserved(true);
+      setIsLoading(true);
+    });
+
     hotel.getHotelsInformation().then(({ data }) => {
       data.forEach((h) => {
         let totalAvailable = 0;
@@ -27,10 +33,6 @@ export default function HotelInformationForm() {
       });
       setHotels(data);
     });
-
-    // hotel.getRoomInformation().then(({ data }) => {
-    //   // setIsReserved(true);
-    // });
   }, []);
 
   function reserve() {
@@ -47,7 +49,7 @@ export default function HotelInformationForm() {
           <Header>Escolha de hotel e quarto</Header>
           <Body>
             <h2>Você já escolheu seu quarto:</h2>
-            <ChosenRoom room={chosenRoom} />
+            <ChosenRoom choosen={chosenRoom} isLoading={isLoading} />
           </Body>
         </>
       ) : (
