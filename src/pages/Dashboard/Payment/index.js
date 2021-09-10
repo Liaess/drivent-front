@@ -2,7 +2,7 @@ import { Switch, useRouteMatch } from "react-router-dom";
 
 import ConditionalRoute from "../../../components/Router/ConditionalRoute";
 
-import TicketContext, { TicketProvider } from "../../../contexts/TicketContext";
+import TicketContext from "../../../contexts/TicketContext";
 
 import PaymentInformationForm from "../../../components/Payment/PaymentInformationForm";
 import PaymentConfirmationForm from "../../../components/Payment/PaymentConfirmationForm";
@@ -12,24 +12,22 @@ export default function Payment() {
   const match = useRouteMatch();
 
   return (
-    <TicketProvider>
-      <Switch>
-        <ConditionalRoute
-          check={ensureExistsTicketInfo}
-          path={`${match.path}`}
-          exact
-        >
-          <PaymentInformationForm />
-        </ConditionalRoute>
-        <ConditionalRoute
-          check={ensureNotExistsTicketInfo}
-          path={`${match.path}/confirmation`}
-          exact
-        >
-          <PaymentConfirmationForm />
-        </ConditionalRoute>
-      </Switch>
-    </TicketProvider>
+    <Switch>
+      <ConditionalRoute
+        check={ensureExistsTicketInfo}
+        path={`${match.path}`}
+        exact
+      >
+        <PaymentInformationForm />
+      </ConditionalRoute>
+      <ConditionalRoute
+        check={ensureNotExistsTicketInfo}
+        path={`${match.path}/confirmation`}
+        exact
+      >
+        <PaymentConfirmationForm />
+      </ConditionalRoute>
+    </Switch>
   );
 }
 

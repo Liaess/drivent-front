@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import useApi from "../../hooks/useApi";
 import EachRoom from "./EachRoomComponent/";
 import Button from "../Form/Button";
@@ -11,7 +11,7 @@ import {
   RoomOptions,
   NotAbleToAcessMessage,
 } from "./HotelsInformationFormWrapper";
-import { useHistory } from "react-router";
+import TicketContext from "../../contexts/TicketContext";
 
 export default function HotelsInformationForm() {
   const [chosenHotel, setChosenHotel] = useState([]);
@@ -22,27 +22,24 @@ export default function HotelsInformationForm() {
   const [allRooms, setAllRooms] = useState([]);
   const [checkIsPaid, setCheckIsPaid] = useState(false);
   const [checkIsOnline, setCheckIsOnline] = useState(false);
-  const [loadingComponent, setLoadingComponent] = useState(true);
-  let history = useHistory();
+  const [loadingComponent, setLoadingComponent] = useState(false);
+  const { ticketData } = useContext(TicketContext);
 
-  const { hotel, ticket, enrollment } = useApi();
+  const { hotel, enrollment } = useApi();
 
   useEffect(async() => {
     const resUserInformation = await enrollment.getPersonalInformations();
     if (resUserInformation.data.length === 0) {
-      history.push("/dashboard/subscription");
+      setLoadingComponent(true);
       return;
     }
-    ticket
-      .getTicketInformation()
-      .then(({ data }) => {
-        if (data.ispaid) setCheckIsPaid(true);
-        if (data.isOnline) setCheckIsOnline(true);
-      })
-      .catch(() => {
-        history.push("/dashboard/payment");
-      });
-    setLoadingComponent(false);
+    if (ticketData === null) {
+      setCheckIsPaid(true);
+      return;
+    }
+    if (ticketData?.isOnline) {
+      setCheckIsOnline(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -58,36 +55,40 @@ export default function HotelsInformationForm() {
     });
   }
 
-  function checkUserReserve() {
-    hotel.getRoomInformation().then(({ data }) => {
-      if (data.length !== 0) {
-        setChosenRoom(data[0].room);
-        setIsLoading(true);
-        setIsReserved(true);
-      }
-    });
+  async function checkUserReserve() {
+    const res = await hotel.getRoomInformation();
+    if (res.data.length !== 0) {
+      await setChosenRoom(res.data[0].room);
+      await setIsReserved(true);
+      await setIsLoading(true);
+    }
   }
 
-  function getHotelAndRooms() {
+  async function getHotelAndRooms() {
     setAllRooms([]);
     setChosenHotel([]);
-    hotel.getHotelsInformation().then(({ data }) => {
-      data.forEach((hotels) => {
-        let totalAvailableCount = 0;
-        hotels.rooms.forEach((eachRoom) => {
-          totalAvailableCount += eachRoom.available;
-          eachRoom.selected = false;
-        });
-        hotels.totalAvailable = totalAvailableCount;
+    const res = await hotel.getHotelsInformation();
+    res.data.forEach((hotels) => {
+      let totalAvailableCount = 0;
+      hotels.rooms.forEach((eachRoom) => {
+        totalAvailableCount += eachRoom.available;
+        eachRoom.selected = false;
       });
-      setAllHotels(data);
+      hotels.totalAvailable = totalAvailableCount;
     });
+    setAllHotels(res.data);
   }
 
   return (
     <>
       {loadingComponent ? (
-        ""
+        <>
+          <Header>Escolha de hotel e quarto</Header>
+          <NotAbleToAcessMessage>
+            <p>Você precisa completar sua inscrição antes</p>
+            <span>de prosseguir pra escolha de ingresso</span>
+          </NotAbleToAcessMessage>
+        </>
       ) : checkIsPaid ? (
         <>
           <Header>Escolha de hotel e quarto</Header>
