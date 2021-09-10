@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Main } from "../Payment/utils/PaymentWrapper";
 import Event  from "./utils/Event";
+import useApi from "../../hooks/useApi";
+import Day from "./utils/Day";
 
 export default function ScheduleActivities() {
-  // const [days, setDays] = useState([]);
+  const { activity } = useApi();
+  const [days, setDays] = useState([]);
+  const [activities, setActivities] = useState([]);
+
+  useEffect(() => {
+    activity.getAllDates().then((res) => {
+      setDays(res.data);
+    });
+  }, []);
+  
   return (
     <Main>
       <h1>Escolha de atividades</h1>
       <Days>
-        <Day>Sexta, 22/10</Day>
+        {
+          days?.map((day, i) => <Day key={i} day = {day} setActivities={setActivities}/>)
+        }
       </Days>
       <Events>
         <div>
@@ -37,18 +50,6 @@ export default function ScheduleActivities() {
 const Days = styled.div`
   display: flex;
   margin-bottom: 30px;
-`;
-
-const Day = styled.button`
-  border: none;
-  width: 131px;
-  height: 37px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  background-color: #E0E0E0;
-  font-size: 14px;
 `;
 
 const Events = styled.div`
