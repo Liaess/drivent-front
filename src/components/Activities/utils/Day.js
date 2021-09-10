@@ -17,8 +17,6 @@ export default function Day({ day, setActivities }) {
     activity.getActivitiesByDate( { date: day } ).then(res => {
       setChosen(true);
       setActivities(res.data);
-      // eslint-disable-next-line no-console
-      console.log(res.data);
     });
   };
 
