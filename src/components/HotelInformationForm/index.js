@@ -1,55 +1,119 @@
-import styled from "styled-components";
 import { useState, useEffect } from "react";
 import useApi from "../../hooks/useApi";
-import Room from "./RoomComponent";
+import EachRoom from "./EachRoomComponent/";
 import Button from "../Form/Button";
-import ChosenRoom from "./ChosenRoom";
+import HotelAndChosenRoom from "./HotelAndChosenRoom/";
+import {
+  Header,
+  Body,
+  HotelOptions,
+  HotelChoice,
+  RoomOptions,
+  NotAbleToAcessMessage,
+} from "./HotelsInformationFormWrapper";
+import { useHistory } from "react-router";
 
-export default function HotelInformationForm() {
+export default function HotelsInformationForm() {
   const [chosenHotel, setChosenHotel] = useState([]);
-  const [chosenRoom, setChosenRoom] = useState(false);
+  const [chosenRoom, setChosenRoom] = useState({});
   const [isReserved, setIsReserved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hotels, setHotels] = useState([]);
-  const [rooms, setRooms] = useState([]);
+  const [allHoltes, setAllHotels] = useState([]);
+  const [allRooms, setAllRooms] = useState([]);
+  const [checkIsPaid, setCheckIsPaid] = useState(false);
+  const [checkIsOnline, setCheckIsOnline] = useState(false);
+  const [loadingComponent, setLoadingComponent] = useState(true);
+  let history = useHistory();
 
-  const { hotel } = useApi();
+  const { hotel, ticket, enrollment } = useApi();
 
-  useEffect(() => {
-    hotel.getRoomInformation().then(({ data }) => {
-      setChosenRoom(data[0].room);
-      setIsReserved(true);
-      setIsLoading(true);
-    });
-
-    hotel.getHotelsInformation().then(({ data }) => {
-      data.forEach((h) => {
-        let totalAvailable = 0;
-        h.rooms.forEach((r) => {
-          totalAvailable += r.available;
-          r.selected = false;
-        });
-        h.totalAvailable = totalAvailable;
+  useEffect(async() => {
+    const resUserInformation = await enrollment.getPersonalInformations();
+    if (resUserInformation.data.length === 0) {
+      history.push("/dashboard/subscription");
+      return;
+    }
+    ticket
+      .getTicketInformation()
+      .then(({ data }) => {
+        if (data.ispaid) setCheckIsPaid(true);
+        if (data.isOnline) setCheckIsOnline(true);
+      })
+      .catch(() => {
+        history.push("/dashboard/payment");
       });
-      setHotels(data);
-    });
+    setLoadingComponent(false);
   }, []);
 
-  function reserve() {
+  useEffect(() => {
+    getHotelAndRooms();
+    checkUserReserve();
+  }, []);
+
+  function reserveUserRoom() {
     const body = { roomId: chosenRoom.roomId };
     hotel.save(body).then(() => {
-      setIsReserved(true);
+      getHotelAndRooms();
+      checkUserReserve();
+    });
+  }
+
+  function checkUserReserve() {
+    hotel.getRoomInformation().then(({ data }) => {
+      if (data.length !== 0) {
+        setChosenRoom(data[0].room);
+        setIsLoading(true);
+        setIsReserved(true);
+      }
+    });
+  }
+
+  function getHotelAndRooms() {
+    setAllRooms([]);
+    setChosenHotel([]);
+    hotel.getHotelsInformation().then(({ data }) => {
+      data.forEach((hotels) => {
+        let totalAvailableCount = 0;
+        hotels.rooms.forEach((eachRoom) => {
+          totalAvailableCount += eachRoom.available;
+          eachRoom.selected = false;
+        });
+        hotels.totalAvailable = totalAvailableCount;
+      });
+      setAllHotels(data);
     });
   }
 
   return (
     <>
-      {isReserved ? (
+      {loadingComponent ? (
+        ""
+      ) : checkIsPaid ? (
+        <>
+          <Header>Escolha de hotel e quarto</Header>
+          <NotAbleToAcessMessage>
+            <p>Você precisa ter confirmado pagamento antes</p>
+            <span>de fazer a escolha de hospedagem</span>
+          </NotAbleToAcessMessage>
+        </>
+      ) : checkIsOnline ? (
+        <>
+          <Header>Escolha de hotel e quarto</Header>
+          <NotAbleToAcessMessage>
+            <p>Sua modalidade de ingresso não inclui hospedagem</p>
+            <span>Prossiga para a escolha de atividades</span>
+          </NotAbleToAcessMessage>
+        </>
+      ) : isReserved ? (
         <>
           <Header>Escolha de hotel e quarto</Header>
           <Body>
             <h2>Você já escolheu seu quarto:</h2>
-            <ChosenRoom choosen={chosenRoom} isLoading={isLoading} />
+            <HotelAndChosenRoom
+              chosenRoom={chosenRoom}
+              isLoading={isLoading}
+              setIsReserved={setIsReserved}
+            />
           </Body>
         </>
       ) : (
@@ -59,38 +123,34 @@ export default function HotelInformationForm() {
             <h2>Primeiro, escolha o Hotel</h2>
 
             <HotelOptions>
-              {hotels.map((hotel, i) => {
+              {allHoltes.map((eachHotel, i) => {
                 return (
                   <HotelChoice
-                    id={hotel.id}
+                    id={eachHotel.id}
                     chosenHotel={chosenHotel}
                     key={i}
                     onClick={() => {
-                      setChosenHotel(hotel);
-                      setRooms(hotel.rooms);
+                      setChosenHotel(eachHotel);
+                      setAllRooms(eachHotel.rooms);
                     }}
                   >
-                    <img alt={hotel.name} src={hotel.image} />
-
-                    <h1>{hotel.name}</h1>
+                    <img alt={eachHotel.name} src={eachHotel.image} />
+                    <h1>{eachHotel.name}</h1>
                     <p>Tipo de acomodação:</p>
-                    <span>{hotel.roomTypes}</span>
-
+                    <span>{eachHotel.roomTypes}</span>
                     <p>Vagas Disponíveis:</p>
-                    <span>{hotel.totalAvailable}</span>
+                    <span>{eachHotel.totalAvailable}</span>
                   </HotelChoice>
                 );
               })}
             </HotelOptions>
-
             <h2>Otimo! Agora escolha seu quarto</h2>
-
             <RoomOptions chosenHotel={chosenHotel}>
-              <Room rooms={rooms} hotel={chosenHotel} setRoom={setChosenRoom} />
+              <EachRoom allRooms={allRooms} setChosenRoom={setChosenRoom} />
             </RoomOptions>
             <Button
               style={{ display: `${chosenRoom ? "block" : "none"}` }}
-              onClick={reserve}
+              onClick={reserveUserRoom}
             >
               Reservar Quarto
             </Button>
@@ -100,67 +160,3 @@ export default function HotelInformationForm() {
     </>
   );
 }
-
-const Header = styled.h1`
-  font-size: 34px;
-`;
-
-const Body = styled.div`
-  h2 {
-    margin-top: 35px;
-    color: #8e8e8e;
-    margin-bottom: 10px;
-  }
-`;
-
-const HotelOptions = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const HotelChoice = styled.div`
-  width: 195px;
-  height: 265px;
-  border-radius: 5px;
-  background-color: ${(props) =>
-    props.id === props.chosenHotel.id ? "#FFEED2" : "#f1f1f1"};
-  margin-right: 40px;
-  font-size: 12px;
-  color: #3c3c3c;
-
-  h1 {
-    margin-left: 15px;
-    font-size: 20px;
-  }
-
-  img {
-    margin: 15px 20px 10px 15px;
-  }
-
-  p {
-    color: #3c3c3c;
-    font-weight: bold;
-    margin: 12px 0 3px 15px;
-  }
-
-  span {
-    margin-left: 15px;
-  }
-`;
-
-const RoomOptions = styled.div`
-  display: ${(props) => (props.chosenHotel ? "flex" : "none")};
-  flex-flow: row wrap;
-`;
-
-const NotAbleToMessage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  p {
-    font-size: 20px;
-    color: #8e8e8e;
-    line-height: 23px;
-  }
-`;
