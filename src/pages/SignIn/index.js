@@ -12,11 +12,13 @@ import EventInfoContext from "../../contexts/EventInfoContext";
 import UserContext from "../../contexts/UserContext";
 
 import useApi from "../../hooks/useApi";
+import ForgotThePassword from "./forgotThePassword";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loadingSignIn, setLoadingSignIn] = useState(false);
+  const [forget, setForget] = useState(false);
 
   const api = useApi();
 
@@ -49,40 +51,55 @@ export default function SignIn() {
 
   return (
     <AuthLayout background={eventInfo.backgroundImage}>
-      <Row>
-        <img src={eventInfo.logoImage} alt="Event Logo" />
-        <Title>{eventInfo.eventTitle}</Title>
-      </Row>
-      <Row>
-        <Label>Entrar</Label>
-        <form onSubmit={submit}>
-          <Input
-            label="E-mail"
-            type="text"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            label="Senha"
-            type="password"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            color="primary"
-            fullWidth
-            disabled={loadingSignIn}
-          >
-            Entrar
-          </Button>
-        </form>
-      </Row>
-      <Row>
-        <Link to="/enroll">Não possui login? Inscreva-se</Link>
-      </Row>
+      {forget ? (
+        <ForgotThePassword setForget={setForget} />
+      ) : (
+        <>
+          <Row>
+            <img src={eventInfo.logoImage} alt="Event Logo" />
+            <Title>{eventInfo.eventTitle}</Title>
+          </Row>
+          <Row>
+            <Label>Entrar</Label>
+            <form onSubmit={submit}>
+              <Input
+                label="E-mail"
+                type="text"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                label="Senha"
+                type="password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                type="submit"
+                color="primary"
+                fullWidth
+                disabled={loadingSignIn}
+              >
+                Entrar
+              </Button>
+            </form>
+          </Row>
+          <Row>
+            <Link
+              onClick={() => {
+                setForget(true);
+              }}
+            >
+              Esqueci minha senha
+            </Link>
+          </Row>
+          <Row>
+            <Link to="/enroll">Não possui login? Inscreva-se</Link>
+          </Row>
+        </>
+      )}
     </AuthLayout>
   );
 }
