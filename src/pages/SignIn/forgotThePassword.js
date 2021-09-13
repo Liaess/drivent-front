@@ -17,7 +17,9 @@ export default function ForgotThePassword({ setForget }) {
 
   const api = useApi();
 
-  function submit() {}
+  function submit(e) {
+    e.preventDefault();
+  }
 
   return (
     <>
