@@ -5,7 +5,7 @@ export default function UnauthorizedToChooseTickets() {
     <Message>
       <h1>
         Você precisa completar sua inscrição antes de fazer a escolha de
-        atividades
+        ingressos
       </h1>
     </Message>
   );
