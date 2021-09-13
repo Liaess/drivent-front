@@ -13,6 +13,10 @@ export function EnrollmentProvider({ children }) {
     enrollment
       .getPersonalInformations()
       .then((res) => {
+        if (res.status !== 200) {
+          return;
+        }
+
         setEnrollmentData(res.data);
       })
       .catch((err) => {
