@@ -125,7 +125,7 @@ export default function PaymentInformationForm() {
               </Option>
             </Choices>
           </Accommodation>
-        ): (
+        ) : (
           <></>
         )}
       </div>

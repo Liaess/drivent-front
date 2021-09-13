@@ -13,6 +13,9 @@ export function TicketProvider({ children }) {
     ticket
       .getTicketInformation()
       .then((res) => {
+        if (res.status !== 200) {
+          return;
+        }
         setTicketData(res.data);
       })
       .catch((err) => {
