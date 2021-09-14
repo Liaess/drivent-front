@@ -8,4 +8,13 @@ export default class UserApi {
   redefine(email) {
     return api.post("/users/redefine", { email });
   }
+
+  newPassword(token, password) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return api.put("/users/redefine", { password }, config);
+  }
 }

@@ -23,11 +23,12 @@ export default function ForgotThePassword({ setForget }) {
     api.user
       .redefine(email)
       .then(() => {
-        setLoading(false);
         alert("ACESSE SEU EMAIL PARA REDEFINIR A SENHA");
+        setLoading(false);
       })
       .catch(() => {
         alert("ERRO!");
+        setLoading(false);
       });
   }
 

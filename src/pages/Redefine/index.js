@@ -33,16 +33,14 @@ export default function Redefine() {
       toast("As senhas devem ser iguais!");
     } else {
       api.user
-        .signUp(token, password)
+        .newPassword(token, password)
         .then((response) => {
           toast("Senha redefinida! Por favor, faça login.");
           history.push("/sign-in");
         })
         .catch((error) => {
           if (error.response) {
-            for (const detail of error.response.data.details) {
-              toast(detail);
-            }
+            toast("Tente novamente mais tarde!");
           } else {
             toast("Não foi possível conectar ao servidor!");
           }
