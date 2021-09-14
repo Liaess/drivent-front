@@ -4,11 +4,19 @@ import useApi from "../../../hooks/useApi";
 
 export default function Event({ talk }) {
   const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered } = talk;
+  const initialHour = beginsAt.replace(":00+00", "").split(":")[0];
+  const initialMinute = beginsAt.replace(":00+00", "").split(":")[1];
+  const finalHour = finishesAt.replace(":00+00", "").split(":")[0];
+  const finalMinute = finishesAt.replace(":00+00", "").split(":")[1];
+
   const { activity } = useApi();
+
+  const duration = (parseInt(finalHour) - parseInt(initialHour)) +  ((parseInt(finalMinute) - parseInt(initialMinute)) / 60);
+  // eslint-disable-next-line no-console
+  console.log(duration);
 
   function registerForTalk(talk) {
     // eslint-disable-next-line no-console
-    console.log(talk);
     activity.registerUserAtActivity({ activityId: id }).then((res) => {
       // eslint-disable-next-line no-console
       console.log(res.data);
@@ -19,10 +27,10 @@ export default function Event({ talk }) {
   }
 
   return(
-    <EventDiv onClick={() => registerForTalk(talk)}>
+    <EventDiv onClick={() => registerForTalk(talk)} duration={duration}>
       <InfoEvent>
         <strong>{title}</strong>
-        <p>{beginsAt} - {finishesAt}</p>
+        <p>{initialHour}:{initialMinute} - {finalHour}:{finalMinute}</p>
       </InfoEvent>
       <Icon 
         remainingSeats={remainingSeats}
@@ -36,7 +44,8 @@ const EventDiv = styled.div`
   border-radius: 5px;
   width: 265px;
   background-color: #F1F1F1;
-  height: 80px;
+  height: calc(3 * 80px);
+  //  height: ${props => ((props.duration * 80))};
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
