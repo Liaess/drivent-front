@@ -3,6 +3,7 @@ import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import EventInfoContext from "../../contexts/EventInfoContext";
+import { TicketProvider } from "../../contexts/TicketContext";
 
 import NavigationBar from "../../components/Dashboard/NavigationBar";
 
@@ -12,6 +13,7 @@ import Payment from "./Payment";
 import Hotel from "./Hotel";
 import Activities from "./Activities";
 import Certificate from "./Certificate";
+import { EnrollmentProvider } from "../../contexts/EnrollmentContext";
 
 export default function Dashboard() {
   const { eventInfo } = useContext(EventInfoContext);
@@ -22,31 +24,35 @@ export default function Dashboard() {
       <NavigationBar />
 
       <Container>
-        <Switch>
-          <Route path={`${match.path}/subscription`} exact>
-            <FillSubscription />
-          </Route>
+        <EnrollmentProvider>
+          <TicketProvider>
+            <Switch>
+              <Route path={`${match.path}/subscription`} exact>
+                <FillSubscription />
+              </Route>
 
-          <Route path={`${match.path}/payment`}>
-            <Payment />
-          </Route>
+              <Route path={`${match.path}/payment`}>
+                <Payment />
+              </Route>
 
-          <Route path={`${match.path}/hotel`} exact>
-            <Hotel />
-          </Route>
+              <Route path={`${match.path}/hotel`} exact>
+                <Hotel />
+              </Route>
 
-          <Route path={`${match.path}/activities`} exact>
-            <Activities />
-          </Route>
+              <Route path={`${match.path}/activities`}>
+                <Activities />
+              </Route>
 
-          <Route path={`${match.path}/certificate`} exact>
-            <Certificate />
-          </Route>
+              <Route path={`${match.path}/certificate`} exact>
+                <Certificate />
+              </Route>
 
-          <Route path={`${match.path}/`}>
-            <Redirect to={`${match.url}/subscription`} />
-          </Route>
-        </Switch>
+              <Route path={`${match.path}/`}>
+                <Redirect to={`${match.url}/subscription`} />
+              </Route>
+            </Switch>
+          </TicketProvider>
+        </EnrollmentProvider>
       </Container>
     </DashboardLayout>
   );
