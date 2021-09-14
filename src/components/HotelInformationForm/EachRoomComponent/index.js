@@ -26,7 +26,6 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
       iconsArray.push(icon);
     });
     setRoomArray(iconsArray);
-    setChosenRoom(false);
   }, [allRooms]);
 
   return (

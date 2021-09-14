@@ -25,6 +25,8 @@ export default function HotelsInformationForm() {
   const [loadingComponent, setLoadingComponent] = useState(false);
   const { ticketData } = useContext(TicketContext);
 
+  console.log(allRooms);
+
   const { hotel, enrollment } = useApi();
 
   useEffect(async() => {
@@ -47,6 +49,15 @@ export default function HotelsInformationForm() {
     checkUserReserve();
   }, []);
 
+  useEffect(() => {
+    setAllRooms([]);
+    setChosenHotel([]);
+    setInterval(() => {
+      getHotelAndRooms();
+      console.log("entrei");
+    }, 5000);
+  }, [isReserved]);
+
   function reserveUserRoom() {
     const body = { roomId: chosenRoom.roomId };
     hotel.save(body).then(() => {
@@ -58,15 +69,13 @@ export default function HotelsInformationForm() {
   async function checkUserReserve() {
     const res = await hotel.getRoomInformation();
     if (res.data.length !== 0) {
-      await setChosenRoom(res.data[0].room);
-      await setIsReserved(true);
-      await setIsLoading(true);
+      setChosenRoom(res.data[0].room);
+      setIsReserved(true);
+      setIsLoading(true);
     }
   }
 
   async function getHotelAndRooms() {
-    setAllRooms([]);
-    setChosenHotel([]);
     const res = await hotel.getHotelsInformation();
     res.data.forEach((hotels) => {
       let totalAvailableCount = 0;
