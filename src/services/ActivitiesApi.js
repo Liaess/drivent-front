@@ -17,4 +17,12 @@ export default class ActivitiesApi extends AuthenticatedApi {
       },
     });
   };
+
+  registerUserAtActivity(body) {
+    return api.post("/activity/register", body, {
+      headers: {
+        ...this.getAuthorizationHeader(),
+      },
+    });
+  };
 }

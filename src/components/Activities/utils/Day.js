@@ -17,6 +17,8 @@ export default function Day(props) {
   function ChooseDay(day) {
     setSelectedDay(id);
     activity.getActivitiesByDate({ date: day }).then((res) => {
+      // eslint-disable-next-line no-console
+      console.log(res.data);
       setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
       setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
       setActivityThirdLocation(res.data.filter(item => item.locationId === 3));

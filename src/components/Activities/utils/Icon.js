@@ -1,32 +1,31 @@
 import { CgCheckO, CgCloseO, CgEnter } from "react-icons/cg";
 import styled from "styled-components";
 
-export default function Icon({ remainingSeats }) {
+export default function Icon({ remainingSeats, userRegistered }) {
   return(
     <CheckIcon>
       {
-        remainingSeats === 0 ?
+        userRegistered === true ?
           <>
-            <CgCloseO />
-            <p>Esgotado</p>
+            <CgCheckO />
+            <p>Inscrito</p>
           </>
-          :
-          <>
-            <CgEnter />
-            <p>{remainingSeats} vagas</p>
-          </>
+          :    
+          remainingSeats === 0 ?
+            <>
+              <CgCloseO />
+              <p>Esgotado</p>
+            </>
+            :
+            <>
+              <CgEnter />
+              <p>{remainingSeats} vagas</p>
+            </>
       }
     </CheckIcon>
 
   );
 }
-
-// remainingSeats > 0 ?
-//   <>
-//     <CgCheckO />
-//     <p>Inscrito</p>
-//   </>
-//   :
 
 const CheckIcon = styled.div`
   width: 66px;

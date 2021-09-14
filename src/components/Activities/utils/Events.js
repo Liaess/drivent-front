@@ -9,10 +9,10 @@ export default function Events(props) {
         <h1>Auditório Principal</h1>
         <Place>
           {
-            activityFirstLocation?.map((activity, i) => 
+            activityFirstLocation?.map((talk, i) => 
               <Event
                 key={i}
-                activity={activity}
+                talk={talk}
               />
             )
           }
@@ -22,10 +22,10 @@ export default function Events(props) {
         <h1>Auditório Lateral</h1>
         <Place>
           {
-            activitySecondLocation?.map((activity, i) => 
+            activitySecondLocation?.map((talk, i) => 
               <Event
                 key={i}
-                activity={activity}
+                talk={talk}
               />
             )
           }
@@ -36,10 +36,10 @@ export default function Events(props) {
         <h1>Sala de Workshop</h1>
         <Place>
           {
-            activityThirdLocation?.map((activity, i) => 
+            activityThirdLocation?.map((talk, i) => 
               <Event
                 key={i}
-                activity={activity}
+                talk={talk}
               />
             )
           }

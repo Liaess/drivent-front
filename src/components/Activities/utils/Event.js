@@ -1,25 +1,33 @@
 import styled from "styled-components";
 import Icon from "./Icon";
+import useApi from "../../../hooks/useApi";
 
-// beginsAt: "10:00"
-// date: "2021-09-29T03:00:00.000Z"
-// finishesAt: "11:00"
-// id: 2
-// location: {id: 1, name: "Salão Boladão"}
-// locationId: 1
-// remainingSeats: 13
-// title: "Bootbar 2"
+export default function Event({ talk }) {
+  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered } = talk;
+  const { activity } = useApi();
 
-export default function Event({ activity }) {
-  const { beginsAt, finishesAt, remainingSeats, title } = activity;
+  function registerForTalk(talk) {
+    // eslint-disable-next-line no-console
+    console.log(talk);
+    activity.registerUserAtActivity({ activityId: id }).then((res) => {
+      // eslint-disable-next-line no-console
+      console.log(res.data);
+    }).catch((err) => {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    });
+  }
 
   return(
-    <EventDiv>
+    <EventDiv onClick={() => registerForTalk(talk)}>
       <InfoEvent>
         <strong>{title}</strong>
         <p>{beginsAt} - {finishesAt}</p>
       </InfoEvent>
-      <Icon remainingSeats={remainingSeats} />
+      <Icon 
+        remainingSeats={remainingSeats}
+        userRegistered={userRegistered}
+      />
     </EventDiv>
   );
 }
