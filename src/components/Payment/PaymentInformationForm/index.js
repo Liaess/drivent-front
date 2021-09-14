@@ -36,7 +36,7 @@ export default function PaymentInformationForm() {
       setChoseToHaveHotel(false);
     } else {
       setIsPresential(false);
-      setChoseNotToHaveHotel(false);
+      setChoseNotToHaveHotel(true);
       setChoseToHaveHotel(false);
       setIsOnlineOption(true);
     }
@@ -125,11 +125,6 @@ export default function PaymentInformationForm() {
               </Option>
             </Choices>
           </Accommodation>
-        ) : isOnlineOption ? (
-          <AccomodationFinishMessage
-            isSelected={isSelected}
-            saveTicketInfos={saveTicketInfos}
-          />
         ) : (
           <></>
         )}
