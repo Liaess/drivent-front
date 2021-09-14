@@ -9,6 +9,7 @@ import Countdown from "./pages/Countdown";
 import Enroll from "./pages/Enroll";
 import SignIn from "./pages/SignIn";
 import Dashboard from "./pages/Dashboard";
+import Redefine from "./pages/Redefine";
 
 import EventInfoContext, {
   EventInfoProvider,
@@ -45,6 +46,14 @@ export default function App() {
 
               <ConditionalRoute check={ensureAuthenticated} path="/dashboard">
                 <Dashboard />
+              </ConditionalRoute>
+
+              <ConditionalRoute
+                check={ensureCountdownOver}
+                path="/redefine/:token"
+                exact
+              >
+                <Redefine />
               </ConditionalRoute>
             </Switch>
           </Router>

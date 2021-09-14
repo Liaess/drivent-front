@@ -7,7 +7,6 @@ import { Row, Title, Label } from "../../components/Auth";
 
 import useApi from "../../hooks/useApi";
 import EventInfoContext from "../../contexts/EventInfoContext";
-import SignIn from ".";
 
 export default function ForgotThePassword({ setForget }) {
   const [email, setEmail] = useState("");
@@ -19,6 +18,17 @@ export default function ForgotThePassword({ setForget }) {
 
   function submit(e) {
     e.preventDefault();
+
+    setLoading(true);
+    api.user
+      .redefine(email)
+      .then(() => {
+        setLoading(false);
+        alert("ACESSE SEU EMAIL PARA REDEFINIR A SENHA");
+      })
+      .catch(() => {
+        alert("ERRO!");
+      });
   }
 
   return (
@@ -43,13 +53,14 @@ export default function ForgotThePassword({ setForget }) {
         </form>
       </Row>
       <Row>
-        <Link
+        <div
+          style={{ cursor: "pointer" }}
           onClick={() => {
             setForget(false);
           }}
         >
           Lembrei minha senha
-        </Link>
+        </div>
       </Row>
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>

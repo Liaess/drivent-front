@@ -87,13 +87,14 @@ export default function SignIn() {
             </form>
           </Row>
           <Row>
-            <Link
+            <div
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 setForget(true);
               }}
             >
               Esqueci minha senha
-            </Link>
+            </div>
           </Row>
           <Row>
             <Link to="/enroll">Não possui login? Inscreva-se</Link>
