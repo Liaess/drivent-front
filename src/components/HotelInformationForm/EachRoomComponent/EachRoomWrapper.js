@@ -14,7 +14,7 @@ export const Container = styled.div`
   background-color: ${(props) =>
     props.disabled
       ? "#E9E9E9"
-      : props.id === props.chosenRoom
+      : props.id === props.selectedRoomByUser
         ? "#FFEED2"
         : ""};
   svg {
