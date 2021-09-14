@@ -25,8 +25,6 @@ export default function HotelsInformationForm() {
   const [loadingComponent, setLoadingComponent] = useState(false);
   const { ticketData } = useContext(TicketContext);
 
-  console.log(allRooms);
-
   const { hotel, enrollment } = useApi();
 
   useEffect(async() => {
@@ -87,6 +85,15 @@ export default function HotelsInformationForm() {
     });
     setAllHotels(res.data);
   }
+
+  useEffect( () => {
+    if(chosenHotel.length !== 0) {
+      const hotel = allHoltes.filter((hotel) => {
+        return hotel.id === chosenHotel.id;
+      });
+      setAllRooms([...hotel[0].rooms]);
+    };
+  }, [allHoltes]);
 
   return (
     <>

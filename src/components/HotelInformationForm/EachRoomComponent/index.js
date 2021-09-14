@@ -34,7 +34,7 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
         return (
           <Container
             key={j}
-            id={j}
+            id={eachRoom[0].roomId}
             selectedRoomByUser={selectedRoomByUser}
             disabled={eachRoom[0].isDisabled}
           >
@@ -54,7 +54,7 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
                         fontSize="1.5em"
                         onClick={() => {
                           checkIsSelected(j, i);
-                          setSelectedRoomByUser(j);
+                          setSelectedRoomByUser(eachRoom[0].roomId);
                         }}
                       />
                     )}
