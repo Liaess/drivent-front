@@ -83,7 +83,6 @@ export default function HotelsInformationForm() {
     <>
       {loadingComponent ? (
         <>
-          <Header>Escolha de hotel e quarto</Header>
           <NotAbleToAcessMessage>
             <p>Você precisa completar sua inscrição antes</p>
             <span>de prosseguir pra escolha de ingresso</span>
@@ -91,7 +90,6 @@ export default function HotelsInformationForm() {
         </>
       ) : checkIsPaid ? (
         <>
-          <Header>Escolha de hotel e quarto</Header>
           <NotAbleToAcessMessage>
             <p>Você precisa ter confirmado pagamento antes</p>
             <span>de fazer a escolha de hospedagem</span>
@@ -99,7 +97,6 @@ export default function HotelsInformationForm() {
         </>
       ) : checkIsOnline ? (
         <>
-          <Header>Escolha de hotel e quarto</Header>
           <NotAbleToAcessMessage>
             <p>Sua modalidade de ingresso não inclui hospedagem</p>
             <span>Prossiga para a escolha de atividades</span>
@@ -122,7 +119,6 @@ export default function HotelsInformationForm() {
           <Header>Escolha de hotel e quarto</Header>
           <Body>
             <h2>Primeiro, escolha o Hotel</h2>
-
             <HotelOptions>
               {allHoltes.map((eachHotel, i) => {
                 return (
