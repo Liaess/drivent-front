@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import useApi from "../../../hooks/useApi";
 import { toast } from "react-toastify";
 
-export default function Event({ talk, chosenEvents, ChooseDay, selectedDay }) {
+export default function Event({ talk, chosenEvents, setActivityFirstLocation, setActivitySecondLocation, setActivityThirdLocation }) {
   const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered } = talk;
   const initialHour = beginsAt.replace(":00+00", "").split(":")[0];
   const initialMinute = beginsAt.replace(":00+00", "").split(":")[1];
@@ -14,24 +14,44 @@ export default function Event({ talk, chosenEvents, ChooseDay, selectedDay }) {
 
   const duration = (parseInt(finalHour) - parseInt(initialHour)) +  ((parseInt(finalMinute) - parseInt(initialMinute)) / 60);
 
-  function registerForTalk(talk) {
+  function registerForTalkFront(talk) {
+    if(talk.remainingSeats === 0) return toast("O evento está esgotado");
     if(chosenEvents.length !== 0) {
       for(let i = 0; i < chosenEvents.length; i++) {
         if(chosenEvents[i].finishesAt <= talk.beginsAt) {
-          // eslint-disable-next-line no-console
-          console.log(selectedDay);
-          ChooseDay(selectedDay);
+          activity.registerUserAtActivity(talk).then(res => {
+            // eslint-disable-next-line no-console
+            console.log(res.data);
+            setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+            setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+            setActivityThirdLocation(res.data.filter(item => item.locationId === 3));      
+          });
         };
       }
     } else {
+      activity.registerUserAtActivity(talk).then(res => {
+        // eslint-disable-next-line no-console
+        console.log(res.data);
+        setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+        setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+        setActivityThirdLocation(res.data.filter(item => item.locationId === 3));  
+      });
+    }
+  };
+
+  function registerForTalkBack(talk) {
+    if(talk.remainingSeats === 0) return toast("O evento está esgotado");
+    activity.registerUserAtActivity(talk).then(res => {
       // eslint-disable-next-line no-console
-      console.log(selectedDay);
-      ChooseDay(selectedDay);
-    };
+      console.log(res.data);
+      setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+      setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+      setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
+    });
   };
   
   return(
-    <EventDiv onClick={() => registerForTalk(talk)} duration={duration} userRegistered={userRegistered}>
+    <EventDiv onClick={() => registerForTalkBack(talk)} duration={duration} userRegistered={userRegistered}>
       <InfoEvent>
         <strong>{title}</strong>
         <p>{initialHour}:{initialMinute} - {finalHour}:{finalMinute}</p>

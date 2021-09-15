@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Event from "./Event";
 
 export default function Events(props) {
-  const { activityFirstLocation, activitySecondLocation, activityThirdLocation, ChooseDay, selectedDay } = props;
+  const { activityFirstLocation, activitySecondLocation, activityThirdLocation, setActivityFirstLocation, setActivitySecondLocation, setActivityThirdLocation } = props;
   const [chosenEvents, setChosenEvents] = useState([]);
 
   return (
@@ -17,8 +17,9 @@ export default function Events(props) {
                 key={i}
                 talk={talk}
                 chosenEvents={chosenEvents}
-                ChooseDay={ChooseDay}
-                selectedDay={selectedDay}
+                setActivityFirstLocation={setActivityFirstLocation}
+                setActivitySecondLocation={setActivitySecondLocation}
+                setActivityThirdLocation={setActivityThirdLocation}
               />
             )
           }
@@ -33,8 +34,9 @@ export default function Events(props) {
                 key={i}
                 talk={talk}
                 chosenEvents={chosenEvents}
-                ChooseDay={ChooseDay}
-                selectedDay={selectedDay}    
+                setActivityFirstLocation={setActivityFirstLocation}
+                setActivitySecondLocation={setActivitySecondLocation}
+                setActivityThirdLocation={setActivityThirdLocation}
               />
             )
           }
@@ -50,8 +52,9 @@ export default function Events(props) {
                 key={i}
                 talk={talk}
                 chosenEvents={chosenEvents}
-                ChooseDay={ChooseDay}
-                selectedDay={selectedDay}    
+                setActivityFirstLocation={setActivityFirstLocation}
+                setActivitySecondLocation={setActivitySecondLocation}
+                setActivityThirdLocation={setActivityThirdLocation}
               />
             )
           }
