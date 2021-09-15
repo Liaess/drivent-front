@@ -1,21 +1,41 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Main } from "../Payment/utils/PaymentWrapper";
-import Event from "./utils/Event";
+import Events from "./utils/Events";
 import useApi from "../../hooks/useApi";
 import Day from "./utils/Day";
 
 export default function ScheduleActivities() {
   const { activity } = useApi();
   const [days, setDays] = useState([]);
-  const [activities, setActivities] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [activityFirstLocation, setActivityFirstLocation] = useState([]);
+  const [activitySecondLocation, setActivitySecondLocation] = useState([]);
+  const [activityThirdLocation, setActivityThirdLocation] = useState([]);
+  const [newInterval, setNewInterval] = useState(null);
 
   useEffect(() => {
     activity.getAllDates().then((res) => {
       setDays(res.data);
     });
   }, []);
+
+  function ChooseDay(day) {
+    if(newInterval) clearInterval(newInterval);
+    setSelectedDay(day);
+    activity.getActivitiesByDate({ date: day }).then((res) => {
+      setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+      setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+      setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
+    });
+    setNewInterval(setInterval(() => {
+      activity.getActivitiesByDate({ date: day }).then((res) => {
+        setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+        setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+        setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
+      });  
+    }, 3000));
+  }
 
   return (
     <Main>
@@ -29,27 +49,21 @@ export default function ScheduleActivities() {
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
             day={day}
-            setActivities={setActivities}
+            ChooseDay={ChooseDay}
           />
         ))}
       </Days>
       {selectedDay !== null && (
-        <Events>
-          <div>
-            <h1>Auditório Principal</h1>
-            <Place>
-              <Event />
-            </Place>
-          </div>
-          <div>
-            <h1>Auditório Lateral</h1>
-            <Place></Place>
-          </div>
-          <div>
-            <h1>Sala de Workshop</h1>
-            <Place></Place>
-          </div>
-        </Events>
+        <Events
+          activityFirstLocation = {activityFirstLocation} 
+          activitySecondLocation = {activitySecondLocation} 
+          activityThirdLocation = {activityThirdLocation}
+          selectedDay={selectedDay}
+          ChooseDay={ChooseDay}
+          setActivityFirstLocation={setActivityFirstLocation}
+          setActivitySecondLocation={setActivitySecondLocation}
+          setActivityThirdLocation={setActivityThirdLocation}
+        />
       )}
     </Main>
   );
@@ -58,24 +72,4 @@ export default function ScheduleActivities() {
 const Days = styled.div`
   display: flex;
   margin-bottom: 30px;
-`;
-
-const Events = styled.div`
-  display: flex;
-  h1 {
-    font-size: 17px;
-    color: #7b7b7b;
-    text-align: center;
-    padding-bottom: 7px;
-  }
-`;
-
-const Place = styled.div`
-  border: 1px solid #d7d7d7;
-  width: 288px;
-  height: 391px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 `;

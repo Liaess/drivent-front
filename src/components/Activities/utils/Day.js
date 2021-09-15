@@ -2,7 +2,7 @@ import styled from "styled-components";
 import useApi from "../../../hooks/useApi";
 
 export default function Day(props) {
-  const { id, selectedDay, setSelectedDay, day, setActivities } = props;
+  const { id, selectedDay, ChooseDay, day } = props;
   const { activity } = useApi();
   function capitalize(s) {
     return s[0].toUpperCase() + s.slice(1);
@@ -14,15 +14,8 @@ export default function Day(props) {
   weekday = capitalize(weekday);
   const date = new Date(day.date).toLocaleDateString("br-PT").slice(0, 5);
 
-  function ChooseDay(day) {
-    setSelectedDay(id);
-    activity.getActivitiesByDate({ date: day }).then((res) => {
-      setActivities(res.data);
-    });
-  }
-
   return (
-    <DayDiv chosen={id === selectedDay} onClick={() => ChooseDay(day.date)}>
+    <DayDiv chosen={day.date === selectedDay} onClick={() => ChooseDay(day.date)}>
       <span>{weekday}, </span>
       <span>{date}</span>
     </DayDiv>
