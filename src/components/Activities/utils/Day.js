@@ -15,7 +15,7 @@ export default function Day(props) {
   const date = new Date(day.date).toLocaleDateString("br-PT").slice(0, 5);
 
   return (
-    <DayDiv chosen={id === selectedDay} onClick={() => ChooseDay(day.date)}>
+    <DayDiv chosen={day.date === selectedDay} onClick={() => ChooseDay(day.date)}>
       <span>{weekday}, </span>
       <span>{date}</span>
     </DayDiv>

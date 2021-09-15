@@ -12,25 +12,29 @@ export default function ScheduleActivities() {
   const [activityFirstLocation, setActivityFirstLocation] = useState([]);
   const [activitySecondLocation, setActivitySecondLocation] = useState([]);
   const [activityThirdLocation, setActivityThirdLocation] = useState([]);
+  const [newInterval, setNewInterval] = useState(null);
 
   useEffect(() => {
-    setInterval(() => {
-      activity.getAllDates().then((res) => {
-        setDays(res.data);
-        if(selectedDay) ChooseDay(selectedDay);
-      });  
-    }, 3000);
+    activity.getAllDates().then((res) => {
+      setDays(res.data);
+    });
   }, []);
 
   function ChooseDay(day) {
-    // eslint-disable-next-line no-console
-    console.log(day);
-    if(selectedDay === null) setSelectedDay(day.id);
+    if(newInterval) clearInterval(newInterval);
+    setSelectedDay(day);
     activity.getActivitiesByDate({ date: day }).then((res) => {
       setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
       setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
       setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
     });
+    setNewInterval(setInterval(() => {
+      activity.getActivitiesByDate({ date: day }).then((res) => {
+        setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+        setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+        setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
+      });  
+    }, 3000));
   }
 
   return (
@@ -43,6 +47,7 @@ export default function ScheduleActivities() {
             key={i}
             id={i}
             selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
             day={day}
             ChooseDay={ChooseDay}
           />
@@ -55,6 +60,9 @@ export default function ScheduleActivities() {
           activityThirdLocation = {activityThirdLocation}
           selectedDay={selectedDay}
           ChooseDay={ChooseDay}
+          setActivityFirstLocation={setActivityFirstLocation}
+          setActivitySecondLocation={setActivitySecondLocation}
+          setActivityThirdLocation={setActivityThirdLocation}
         />
       )}
     </Main>

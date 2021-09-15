@@ -1,10 +1,8 @@
-import { useState } from "react";
 import styled from "styled-components";
 import Event from "./Event";
 
 export default function Events(props) {
-  const { activityFirstLocation, activitySecondLocation, activityThirdLocation, setActivityFirstLocation, setActivitySecondLocation, setActivityThirdLocation } = props;
-  const [chosenEvents, setChosenEvents] = useState([]);
+  const { activityFirstLocation, activitySecondLocation, activityThirdLocation, setActivityFirstLocation, setActivitySecondLocation, setActivityThirdLocation, selectedDay } = props;
 
   return (
     <EventsDiv>
@@ -16,10 +14,10 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
-                chosenEvents={chosenEvents}
                 setActivityFirstLocation={setActivityFirstLocation}
                 setActivitySecondLocation={setActivitySecondLocation}
                 setActivityThirdLocation={setActivityThirdLocation}
+                selectedDay={selectedDay}
               />
             )
           }
@@ -33,10 +31,10 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
-                chosenEvents={chosenEvents}
                 setActivityFirstLocation={setActivityFirstLocation}
                 setActivitySecondLocation={setActivitySecondLocation}
                 setActivityThirdLocation={setActivityThirdLocation}
+                selectedDay={selectedDay}
               />
             )
           }
@@ -51,10 +49,10 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
-                chosenEvents={chosenEvents}
                 setActivityFirstLocation={setActivityFirstLocation}
                 setActivitySecondLocation={setActivitySecondLocation}
                 setActivityThirdLocation={setActivityThirdLocation}
+                selectedDay={selectedDay}
               />
             )
           }
