@@ -23,6 +23,7 @@ export default function HotelsInformationForm() {
   const [checkIsPaid, setCheckIsPaid] = useState(false);
   const [checkIsOnline, setCheckIsOnline] = useState(false);
   const [loadingComponent, setLoadingComponent] = useState(false);
+  const [selectedRoomByUser, setSelectedRoomByUser] = useState([]);
   const { ticketData } = useContext(TicketContext);
 
   const { hotel, enrollment } = useApi();
@@ -47,6 +48,14 @@ export default function HotelsInformationForm() {
     checkUserReserve();
   }, []);
 
+  useEffect(() => {
+    setAllRooms([]);
+    setChosenHotel([]);
+    setInterval(() => {
+      getHotelAndRooms();
+    }, 3000);
+  }, [isReserved]);
+
   function reserveUserRoom() {
     const body = { roomId: chosenRoom.roomId };
     hotel.save(body).then(() => {
@@ -58,26 +67,32 @@ export default function HotelsInformationForm() {
   async function checkUserReserve() {
     const res = await hotel.getRoomInformation();
     if (res.data.length !== 0) {
-      await setChosenRoom(res.data[0].room);
-      await setIsReserved(true);
-      await setIsLoading(true);
+      setChosenRoom(res.data[0].room);
+      setIsReserved(true);
+      setIsLoading(true);
     }
   }
 
   async function getHotelAndRooms() {
-    setAllRooms([]);
-    setChosenHotel([]);
     const res = await hotel.getHotelsInformation();
     res.data.forEach((hotels) => {
       let totalAvailableCount = 0;
       hotels.rooms.forEach((eachRoom) => {
         totalAvailableCount += eachRoom.available;
-        eachRoom.selected = false;
       });
       hotels.totalAvailable = totalAvailableCount;
     });
     setAllHotels(res.data);
   }
+
+  useEffect( () => {
+    if(chosenHotel.length !== 0) {
+      const hotel = allHoltes.filter((hotel) => {
+        return hotel.id === chosenHotel.id;
+      });
+      setAllRooms([...hotel[0].rooms]);
+    };
+  }, [allHoltes]);
 
   return (
     <>
@@ -128,6 +143,7 @@ export default function HotelsInformationForm() {
                     key={i}
                     onClick={() => {
                       setChosenHotel(eachHotel);
+                      setSelectedRoomByUser([]);
                       setAllRooms(eachHotel.rooms);
                     }}
                   >
@@ -143,7 +159,7 @@ export default function HotelsInformationForm() {
             </HotelOptions>
             <h2>Otimo! Agora escolha seu quarto</h2>
             <RoomOptions chosenHotel={chosenHotel}>
-              <EachRoom allRooms={allRooms} setChosenRoom={setChosenRoom} />
+              <EachRoom allRooms={allRooms} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} selectedRoomByUser={selectedRoomByUser} setSelectedRoomByUser={setSelectedRoomByUser} />
             </RoomOptions>
             <Button
               style={{ display: `${chosenRoom ? "block" : "none"}` }}

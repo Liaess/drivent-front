@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 import { renderEachIcon } from "./EachRoomUtils";
 import { Container, PersonIcons } from "./EachRoomWrapper";
 
-export default function EachRoom({ allRooms, setChosenRoom }) {
+export default function EachRoom({
+  chosenRoom,
+  selectedRoomByUser,
+  setSelectedRoomByUser,
+  allRooms,
+  setChosenRoom,
+}) {
   const [roomArray, setRoomArray] = useState([]);
-  const [selectedRoomByUser, setSelectedRoomByUser] = useState([]);
 
   function checkIsSelected(j, i) {
     const checkRoomSelected = [...roomArray];
@@ -22,11 +27,18 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
   useEffect(() => {
     const iconsArray = [];
     allRooms.forEach((eachRoom) => {
-      const icon = renderEachIcon(eachRoom);
+      const icon = renderEachIcon(eachRoom, chosenRoom);
       iconsArray.push(icon);
     });
+    if (chosenRoom?.selectByUser) {
+      const selectedIcon = iconsArray.find((arrayIcon) =>
+        arrayIcon.find((eachIcon) => eachIcon.roomId === chosenRoom.roomId)
+      );
+      if (selectedIcon) {
+        selectedIcon[0].selectByUser = true;
+      }
+    }
     setRoomArray(iconsArray);
-    setChosenRoom(false);
   }, [allRooms]);
 
   return (
@@ -35,7 +47,7 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
         return (
           <Container
             key={j}
-            id={j}
+            id={eachRoom[0].roomId}
             selectedRoomByUser={selectedRoomByUser}
             disabled={eachRoom[0].isDisabled}
           >
@@ -55,7 +67,7 @@ export default function EachRoom({ allRooms, setChosenRoom }) {
                         fontSize="1.5em"
                         onClick={() => {
                           checkIsSelected(j, i);
-                          setSelectedRoomByUser(j);
+                          setSelectedRoomByUser(eachRoom[0].roomId);
                         }}
                       />
                     )}
