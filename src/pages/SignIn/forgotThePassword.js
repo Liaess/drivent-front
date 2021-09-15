@@ -4,6 +4,7 @@ import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Link from "../../components/Link";
 import { Row, Title, Label } from "../../components/Auth";
+import { toast } from "react-toastify";
 
 import useApi from "../../hooks/useApi";
 import EventInfoContext from "../../contexts/EventInfoContext";
@@ -23,11 +24,11 @@ export default function ForgotThePassword({ setForget }) {
     api.user
       .redefine(email)
       .then(() => {
-        alert("ACESSE SEU EMAIL PARA REDEFINIR A SENHA");
+        toast("Acesse seu email para redefinir a senha!");
         setLoading(false);
       })
       .catch(() => {
-        alert("ERRO!");
+        toast("Aconteceu um imprevisto, tente novamente!");
         setLoading(false);
       });
   }
