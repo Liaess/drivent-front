@@ -23,6 +23,7 @@ export default function HotelsInformationForm() {
   const [checkIsPaid, setCheckIsPaid] = useState(false);
   const [checkIsOnline, setCheckIsOnline] = useState(false);
   const [loadingComponent, setLoadingComponent] = useState(false);
+  const [selectedRoomByUser, setSelectedRoomByUser] = useState([]);
   const { ticketData } = useContext(TicketContext);
 
   const { hotel, enrollment } = useApi();
@@ -52,7 +53,6 @@ export default function HotelsInformationForm() {
     setChosenHotel([]);
     setInterval(() => {
       getHotelAndRooms();
-      console.log("entrei");
     }, 5000);
   }, [isReserved]);
 
@@ -79,7 +79,6 @@ export default function HotelsInformationForm() {
       let totalAvailableCount = 0;
       hotels.rooms.forEach((eachRoom) => {
         totalAvailableCount += eachRoom.available;
-        eachRoom.selected = false;
       });
       hotels.totalAvailable = totalAvailableCount;
     });
@@ -144,6 +143,7 @@ export default function HotelsInformationForm() {
                     key={i}
                     onClick={() => {
                       setChosenHotel(eachHotel);
+                      setSelectedRoomByUser([]);
                       setAllRooms(eachHotel.rooms);
                     }}
                   >
@@ -159,7 +159,7 @@ export default function HotelsInformationForm() {
             </HotelOptions>
             <h2>Otimo! Agora escolha seu quarto</h2>
             <RoomOptions chosenHotel={chosenHotel}>
-              <EachRoom allRooms={allRooms} setChosenRoom={setChosenRoom} />
+              <EachRoom allRooms={allRooms} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} selectedRoomByUser={selectedRoomByUser} setSelectedRoomByUser={setSelectedRoomByUser} />
             </RoomOptions>
             <Button
               style={{ display: `${chosenRoom ? "block" : "none"}` }}

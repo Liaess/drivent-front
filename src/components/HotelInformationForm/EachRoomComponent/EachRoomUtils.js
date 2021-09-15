@@ -1,4 +1,4 @@
-export function renderEachIcon(eachRoom) {
+export function renderEachIcon(eachRoom, chosenRoom) {
   const allPlaces = [];
 
   for (let i = 1; i <= eachRoom.available; i++) {
