@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import useApi from "../../../hooks/useApi";
 
 export default function Event({ talk }) {
-  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered } = talk;
+  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered, selectedDay } = talk;
   const initialHour = beginsAt.replace(":00+00", "").split(":")[0];
   const initialMinute = beginsAt.replace(":00+00", "").split(":")[1];
   const finalHour = finishesAt.replace(":00+00", "").split(":")[0];
@@ -16,8 +16,12 @@ export default function Event({ talk }) {
   console.log(duration);
 
   function registerForTalk(talk) {
-    // eslint-disable-next-line no-console
-    activity.registerUserAtActivity({ activityId: id }).then((res) => {
+    const body = {
+      activityId: id,
+      date: selectedDay,
+      beginsAt, finishesAt
+    };
+    activity.registerUserAtActivity(body).then((res) => {
       // eslint-disable-next-line no-console
       console.log(res.data);
     }).catch((err) => {
@@ -44,8 +48,7 @@ const EventDiv = styled.div`
   border-radius: 5px;
   width: 265px;
   background-color: #F1F1F1;
-  height: calc(3 * 80px);
-  //  height: ${props => ((props.duration * 80))};
+  height: calc(${props => props.duration} * 80px);
   margin-top: 10px;
   display: flex;
   justify-content: space-between;

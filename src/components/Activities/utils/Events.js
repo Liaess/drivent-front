@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Event from "./Event";
 
 export default function Events(props) {
-  const { activityFirstLocation, activitySecondLocation, activityThirdLocation } = props;
+  const { activityFirstLocation, activitySecondLocation, activityThirdLocation, selectedDay } = props;
   return (
     <EventsDiv>
       <div>
@@ -13,6 +13,7 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
+                selectedDay={selectedDay}
               />
             )
           }
@@ -26,6 +27,7 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
+                selectedDay={selectedDay}
               />
             )
           }
@@ -40,6 +42,7 @@ export default function Events(props) {
               <Event
                 key={i}
                 talk={talk}
+                selectedDay={selectedDay}
               />
             )
           }

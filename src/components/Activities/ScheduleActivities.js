@@ -41,7 +41,8 @@ export default function ScheduleActivities() {
         <Events
           activityFirstLocation = {activityFirstLocation} 
           activitySecondLocation = {activitySecondLocation} 
-          activityThirdLocation = {activityThirdLocation} 
+          activityThirdLocation = {activityThirdLocation}
+          selectedDay={selectedDay}
         />
       )}
     </Main>
