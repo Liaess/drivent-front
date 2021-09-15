@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import Icon from "./Icon";
 import useApi from "../../../hooks/useApi";
+import { toast } from "react-toastify";
 
-export default function Event({ talk }) {
-  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered, chosenEvents, setChosenEvents } = talk;
+export default function Event({ talk, chosenEvents, ChooseDay, selectedDay }) {
+  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered } = talk;
   const initialHour = beginsAt.replace(":00+00", "").split(":")[0];
   const initialMinute = beginsAt.replace(":00+00", "").split(":")[1];
   const finalHour = finishesAt.replace(":00+00", "").split(":")[0];
@@ -12,23 +13,25 @@ export default function Event({ talk }) {
   const { activity } = useApi();
 
   const duration = (parseInt(finalHour) - parseInt(initialHour)) +  ((parseInt(finalMinute) - parseInt(initialMinute)) / 60);
-  // eslint-disable-next-line no-console
-  console.log(duration);
 
   function registerForTalk(talk) {
-    activity.registerUserAtActivity({ talk }).then((res) => {
-      const newArr = [...chosenEvents, talk];
-      setChosenEvents(newArr);
-    }).catch((err) => {
+    if(chosenEvents.length !== 0) {
+      for(let i = 0; i < chosenEvents.length; i++) {
+        if(chosenEvents[i].finishesAt <= talk.beginsAt) {
+          // eslint-disable-next-line no-console
+          console.log(selectedDay);
+          ChooseDay(selectedDay);
+        };
+      }
+    } else {
       // eslint-disable-next-line no-console
-      console.log(err);
-    });
-  }
-  // eslint-disable-next-line no-console
-  console.log("array de eventos do user", chosenEvents);
-
+      console.log(selectedDay);
+      ChooseDay(selectedDay);
+    };
+  };
+  
   return(
-    <EventDiv onClick={() => registerForTalk(talk)} duration={duration}>
+    <EventDiv onClick={() => registerForTalk(talk)} duration={duration} userRegistered={userRegistered}>
       <InfoEvent>
         <strong>{title}</strong>
         <p>{initialHour}:{initialMinute} - {finalHour}:{finalMinute}</p>
@@ -44,7 +47,7 @@ export default function Event({ talk }) {
 const EventDiv = styled.div`
   border-radius: 5px;
   width: 265px;
-  background-color: #F1F1F1;
+  background-color: ${props => props.userRegistered ? "#D0FFDB" : "#F1F1F1"};
   height: calc(${props => props.duration} * 80px);
   margin-top: 10px;
   display: flex;

@@ -14,10 +14,24 @@ export default function ScheduleActivities() {
   const [activityThirdLocation, setActivityThirdLocation] = useState([]);
 
   useEffect(() => {
-    activity.getAllDates().then((res) => {
-      setDays(res.data);
-    });
+    setInterval(() => {
+      activity.getAllDates().then((res) => {
+        setDays(res.data);
+        if(selectedDay) ChooseDay(selectedDay);
+      });  
+    }, 3000);
   }, []);
+
+  function ChooseDay(day) {
+    // eslint-disable-next-line no-console
+    console.log(day);
+    if(selectedDay === null) setSelectedDay(day.id);
+    activity.getActivitiesByDate({ date: day }).then((res) => {
+      setActivityFirstLocation(res.data.filter(item => item.locationId === 1));
+      setActivitySecondLocation(res.data.filter(item => item.locationId === 2));
+      setActivityThirdLocation(res.data.filter(item => item.locationId === 3));
+    });
+  }
 
   return (
     <Main>
@@ -29,11 +43,8 @@ export default function ScheduleActivities() {
             key={i}
             id={i}
             selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
             day={day}
-            setActivityFirstLocation={setActivityFirstLocation}
-            setActivitySecondLocation={setActivitySecondLocation}
-            setActivityThirdLocation={setActivityThirdLocation}
+            ChooseDay={ChooseDay}
           />
         ))}
       </Days>
@@ -43,6 +54,7 @@ export default function ScheduleActivities() {
           activitySecondLocation = {activitySecondLocation} 
           activityThirdLocation = {activityThirdLocation}
           selectedDay={selectedDay}
+          ChooseDay={ChooseDay}
         />
       )}
     </Main>
