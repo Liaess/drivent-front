@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export default function Icon({ remainingSeats, userRegistered }) {
   return(
-    <CheckIcon>
+    <CheckIcon available={remainingSeats === 0 && userRegistered === false}>
       {
         userRegistered === true ?
           <>
@@ -37,7 +37,7 @@ const CheckIcon = styled.div`
   align-items: center;
   font-size: 9px;
   line-height: 11px;
-  color: #078632; //#CC6666
+  color: ${props => props.available ? "#CC6666" : "#078632"}; 
 
   svg {
     width: 16px;

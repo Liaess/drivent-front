@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import useApi from "../../../hooks/useApi";
 
 export default function Event({ talk }) {
-  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered, selectedDay } = talk;
+  const { id, beginsAt, finishesAt, remainingSeats, title, userRegistered, chosenEvents, setChosenEvents } = talk;
   const initialHour = beginsAt.replace(":00+00", "").split(":")[0];
   const initialMinute = beginsAt.replace(":00+00", "").split(":")[1];
   const finalHour = finishesAt.replace(":00+00", "").split(":")[0];
@@ -16,19 +16,16 @@ export default function Event({ talk }) {
   console.log(duration);
 
   function registerForTalk(talk) {
-    const body = {
-      activityId: id,
-      date: selectedDay,
-      beginsAt, finishesAt
-    };
-    activity.registerUserAtActivity(body).then((res) => {
-      // eslint-disable-next-line no-console
-      console.log(res.data);
+    activity.registerUserAtActivity({ talk }).then((res) => {
+      const newArr = [...chosenEvents, talk];
+      setChosenEvents(newArr);
     }).catch((err) => {
       // eslint-disable-next-line no-console
       console.log(err);
     });
   }
+  // eslint-disable-next-line no-console
+  console.log("array de eventos do user", chosenEvents);
 
   return(
     <EventDiv onClick={() => registerForTalk(talk)} duration={duration}>
