@@ -53,7 +53,7 @@ export default function HotelsInformationForm() {
     setChosenHotel([]);
     setInterval(() => {
       getHotelAndRooms();
-    }, 5000);
+    }, 3000);
   }, [isReserved]);
 
   function reserveUserRoom() {
