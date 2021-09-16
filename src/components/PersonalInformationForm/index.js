@@ -12,7 +12,6 @@ import useApi from "../../hooks/useApi";
 import { useForm } from "../../hooks/useForm";
 
 import EnrollmentContext from "../../contexts/EnrollmentContext";
-
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import Select from "../../components/Form/Select";
@@ -22,13 +21,30 @@ import { InputWrapper } from "./InputWrapper";
 import { ErrorMsg } from "./ErrorMsg";
 import { ufList } from "./ufList";
 import FormValidations from "./FormValidations";
+import DropzoneField from "./DropzoneField";
+import Photo from "./Photo";
+import filesize from "filesize";
 
 dayjs.extend(CustomParseFormat);
 
 export default function PersonalInformationForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
+  const [file, setFile] = useState([]);
+  const [editedFile, setEditedFile] = useState([]);
+  const [displayImage, setDisplayImage] = useState(false);
   const { enrollment, cep } = useApi();
   const { setEnrollmentData } = useContext(EnrollmentContext);
+
+  function handleUpload(accpetedFile) {
+    const uploadedFile = accpetedFile.map((file, index) => ({
+      ...file,
+      id: index,
+      readableSize: filesize(file.size),
+      preview: URL.createObjectURL(file),
+    }));
+    setFile(accpetedFile);
+    setEditedFile(uploadedFile);
+  }
 
   const {
     handleSubmit,
@@ -62,8 +78,27 @@ export default function PersonalInformationForm() {
       enrollment
         .save(newData)
         .then((response) => {
-          setEnrollmentData(response.data);
           toast("Salvo com sucesso!");
+          setEnrollmentData(response.data);
+          if (file.length !== 0) {
+            enrollment
+              .uploadImage(file)
+              .then((response) => {
+                setEnrollmentData(response.data);
+                setDisplayImage(true);
+              })
+              .catch((error) => {
+                if (error.response?.data?.details) {
+                  for (const detail of error.response.data.details) {
+                    toast(detail);
+                  }
+                } else {
+                  toast("Não foi possível");
+                }
+                /* eslint-disable-next-line no-console */
+                console.log(error);
+              });
+          }
         })
         .catch((error) => {
           if (error.response?.data?.details) {
@@ -90,6 +125,7 @@ export default function PersonalInformationForm() {
       state: "",
       neighborhood: "",
       addressDetail: "",
+      image: "",
     },
   });
 
@@ -99,7 +135,7 @@ export default function PersonalInformationForm() {
         return;
       }
 
-      const { name, cpf, birthday, phone, address } = response.data;
+      const { name, cpf, birthday, phone, address, image } = response.data;
 
       setData({
         name,
@@ -113,10 +149,11 @@ export default function PersonalInformationForm() {
         number: address.number,
         neighborhood: address.neighborhood,
         addressDetail: address.addressDetail,
+        image,
       });
       setEnrollmentData(response.data);
     });
-  }, []);
+  }, [displayImage]);
 
   function isValidCep(cep) {
     return cep.length === 8;
@@ -288,6 +325,24 @@ export default function PersonalInformationForm() {
               onChange={handleChange("addressDetail")}
             />
           </InputWrapper>
+          {data.image ? (
+            <ImageHolder>
+              <UserImage src={data.image} />
+              <p>{data.name}</p>
+            </ImageHolder>
+          ) : (
+            <InputWrapper>
+              {file.length === 0 ? (
+                <DropzoneField handleUpload={handleUpload} />
+              ) : (
+                <Photo
+                  editedFile={editedFile}
+                  setEditedFile={setEditedFile}
+                  setFile={setFile}
+                />
+              )}
+            </InputWrapper>
+          )}
 
           <SubmitContainer>
             <Button type="submit" disabled={dynamicInputIsLoading}>
@@ -311,4 +366,17 @@ const SubmitContainer = styled.div`
   > button {
     margin-top: 0 !important;
   }
+`;
+
+const ImageHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5px;
+`;
+
+const UserImage = styled.img`
+  width: 100px;
+  height: 100px;
 `;
